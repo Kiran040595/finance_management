@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.financemanagement.dto.LoanRequestDTO;
 import com.example.financemanagement.model.Loan;
 import com.example.financemanagement.service.LoanService;
 
@@ -36,7 +37,12 @@ public class LoanController {
     public Loan createLoan(@RequestBody Loan loan) {
         return loanService.saveLoan(loan);
     }
-
+    
+    @PostMapping("/create")
+    public Loan createLoan(@RequestBody LoanRequestDTO loanRequestDTO) {
+        return loanService.createLoan(loanRequestDTO);
+    }
+    
     @DeleteMapping("/{id}")
     public void deleteLoan(@PathVariable Long id) {
         loanService.deleteLoan(id);
