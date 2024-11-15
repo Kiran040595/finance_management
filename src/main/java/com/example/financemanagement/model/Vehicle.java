@@ -19,13 +19,11 @@ public class Vehicle {
     private String vehicleModel;
     private LocalDate insuranceValidity;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+   
+   
 
-    @OneToOne(mappedBy = "vehicle")
-    private Loan loan;
-
+   
+   
     // Getters and setters
     public Long getId() {
         return id;
@@ -59,19 +57,7 @@ public class Vehicle {
         this.insuranceValidity = insuranceValidity;
     }
 
-    public Customer getCustomer() {
-        return customer;
-    }
+   
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public Loan getLoan() {
-        return loan;
-    }
-
-    public void setLoan(Loan loan) {
-        this.loan = loan;
-    }
+   
 }

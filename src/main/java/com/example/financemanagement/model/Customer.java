@@ -19,11 +19,10 @@ public class Customer {
     private String address;
     private String adharCardNumber;
 
-    @OneToMany(mappedBy = "customer")
-    private List<Vehicle> vehicles;
+   
+  
 
-    // Getters and setters
-    // Getters and Setters
+   
     public Long getId() {
         return id;
     }
@@ -64,12 +63,6 @@ public class Customer {
         this.adharCardNumber = adharCardNumber;
     }
 
-    public List<Vehicle> getVehicles() {
-        return vehicles;
-    }
-
-    public void setVehicles(List<Vehicle> vehicles) {
-        this.vehicles = vehicles;
-    }
+   
 }
 

@@ -15,61 +15,72 @@ public class Loan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private BigDecimal loanAmount;
-    private int emiTenure;
-    private BigDecimal monthlyEmi;
-    private LocalDate emiDate;
+    
+    private String fileNumber;
+    private String customerName;
+    private Double loanAmount;
+    private Integer tenure;
+    private Double interestRate;
+    private String vehicleNumber;
+    private String insuranceValidity;
+    private Double emi;
+	public String getFileNumber() {
+		return fileNumber;
+	}
+	public void setFileNumber(String fileNumber) {
+		this.fileNumber = fileNumber;
+	}
+	public String getCustomerName() {
+		return customerName;
+	}
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+	public Double getLoanAmount() {
+		return loanAmount;
+	}
+	public void setLoanAmount(Double loanAmount) {
+		this.loanAmount = loanAmount;
+	}
+	public Integer getTenure() {
+		return tenure;
+	}
+	public void setTenure(Integer tenure) {
+		this.tenure = tenure;
+	}
+	public Double getInterestRate() {
+		return interestRate;
+	}
+	public void setInterestRate(Double interestRate) {
+		this.interestRate = interestRate;
+	}
+	public String getVehicleNumber() {
+		return vehicleNumber;
+	}
+	public void setVehicleNumber(String vehicleNumber) {
+		this.vehicleNumber = vehicleNumber;
+	}
+	public String getInsuranceValidity() {
+		return insuranceValidity;
+	}
+	public void setInsuranceValidity(String insuranceValidity) {
+		this.insuranceValidity = insuranceValidity;
+	}
+	public Double getEmi() {
+		return emi;
+	}
+	public void setEmi(Double emi) {
+		this.emi = emi;
+	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+    
+    
+    
+    
 
-    @OneToOne
-    @JoinColumn(name = "vehicle_id")
-    private Vehicle vehicle;
-
-    // Getters and setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public BigDecimal getLoanAmount() {
-        return loanAmount;
-    }
-
-    public void setLoanAmount(BigDecimal loanAmount) {
-        this.loanAmount = loanAmount;
-    }
-
-    public int getEmiTenure() {
-        return emiTenure;
-    }
-
-    public void setEmiTenure(int emiTenure) {
-        this.emiTenure = emiTenure;
-    }
-
-    public BigDecimal getMonthlyEmi() {
-        return monthlyEmi;
-    }
-
-    public void setMonthlyEmi(BigDecimal monthlyEmi) {
-        this.monthlyEmi = monthlyEmi;
-    }
-
-    public LocalDate getEmiDate() {
-        return emiDate;
-    }
-
-    public void setEmiDate(LocalDate emiDate) {
-        this.emiDate = emiDate;
-    }
-
-    public Vehicle getVehicle() {
-        return vehicle;
-    }
-
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
-    }
 }
