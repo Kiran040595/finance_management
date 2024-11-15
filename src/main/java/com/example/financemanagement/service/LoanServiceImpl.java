@@ -9,6 +9,10 @@ import com.example.financemanagement.model.Loan;
 import com.example.financemanagement.repository.LoanRepository;
 import com.example.financemanagement.transformar.LoanTransformaer;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+
 @Service
 public class LoanServiceImpl implements LoanService {
 
@@ -32,5 +36,13 @@ public class LoanServiceImpl implements LoanService {
 		
 	}
 	
+	
+	 @Override
+	 public List<LoanDTO> getAllLoans() {
+	        List<Loan> loans = loanRepository.findAll(); // Fetch all loans from the database
+	        return loans.stream() 			// Convert List<Loan> to List<LoanDTO>
+	                    .map(loanMapper::toDto)
+	                    .collect(Collectors.toList());
+	    }
 	
 }

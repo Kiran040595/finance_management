@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface LoanService {
 	
 	LoanDTO createLoan(LoanDTO loanDTO);
+	List<LoanDTO> getAllLoans();
    
     
     
