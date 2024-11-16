@@ -3,7 +3,7 @@ package com.example.financemanagement.dto;
 public class LoanDTO {
 
 	
-	
+    private Long id;
 	private String fileNumber;
     private String customerName;
     private double loanAmount;
@@ -12,6 +12,7 @@ public class LoanDTO {
     private String vehicleNumber;
     private String insuranceValidity;
     private double emi;
+    
 	public String getFileNumber() {
 		return fileNumber;
 	}
@@ -60,6 +61,13 @@ public class LoanDTO {
 	public void setEmi(double emi) {
 		this.emi = emi;
 	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
     
     
     
