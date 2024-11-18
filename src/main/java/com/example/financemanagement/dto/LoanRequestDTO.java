@@ -7,15 +7,16 @@ public class LoanRequestDTO {
     // Loan Details
     private Double loanAmount;
     private Double interestRate;
-    private Integer emi; // Monthly EMI (calculated elsewhere, if needed)
+    private Double  emi; // Monthly EMI (calculated elsewhere, if needed)
     private Integer tenure; // Loan tenure in months
     private String fileNumber; // Unique Identifier for Loan
+    private LocalDate loanCreationDate;
 
     // Customer Details
     private String customerName;
     private String customerPhonePrimary;
     private String customerPhoneSecondary;
-    private String customerAddress;
+    private String customerFullAddress;
     private String customerAadhaarNumber;
     private String customerFatherName;
 
@@ -28,9 +29,8 @@ public class LoanRequestDTO {
     private String guarantorName;
     private String guarantorPhonePrimary;
     private String guarantorPhoneSecondary;
-    private String guarantorAddress;
     private String guarantorAadhaarNumber;
-
+    private String guarantorFullAddress;
     // Getters and Setters
 
     public Double getLoanAmount() {
@@ -49,15 +49,17 @@ public class LoanRequestDTO {
         this.interestRate = interestRate;
     }
 
-    public Integer getEmi() {
-        return emi;
-    }
+   
 
-    public void setEmi(Integer emi) {
-        this.emi = emi;
-    }
+    public Double getEmi() {
+		return emi;
+	}
 
-    public Integer getTenure() {
+	public void setEmi(Double emi) {
+		this.emi = emi;
+	}
+
+	public Integer getTenure() {
         return tenure;
     }
 
@@ -97,15 +99,17 @@ public class LoanRequestDTO {
         this.customerPhoneSecondary = customerPhoneSecondary;
     }
 
-    public String getCustomerAddress() {
-        return customerAddress;
-    }
+   
 
-    public void setCustomerAddress(String customerAddress) {
-        this.customerAddress = customerAddress;
-    }
+    public String getCustomerFullAddress() {
+		return customerFullAddress;
+	}
 
-    public String getCustomerAadhaarNumber() {
+	public void setCustomerFullAddress(String customerFullAddress) {
+		this.customerFullAddress = customerFullAddress;
+	}
+
+	public String getCustomerAadhaarNumber() {
         return customerAadhaarNumber;
     }
 
@@ -169,19 +173,30 @@ public class LoanRequestDTO {
         this.guarantorPhoneSecondary = guarantorPhoneSecondary;
     }
 
-    public String getGuarantorAddress() {
-        return guarantorAddress;
-    }
+  
 
-    public void setGuarantorAddress(String guarantorAddress) {
-        this.guarantorAddress = guarantorAddress;
-    }
+    public LocalDate getLoanCreationDate() {
+		return loanCreationDate;
+	}
 
-    public String getGuarantorAadhaarNumber() {
+	public void setLoanCreationDate(LocalDate loanCreationDate) {
+		this.loanCreationDate = loanCreationDate;
+	}
+
+	public String getGuarantorAadhaarNumber() {
         return guarantorAadhaarNumber;
     }
 
     public void setGuarantorAadhaarNumber(String guarantorAadhaarNumber) {
         this.guarantorAadhaarNumber = guarantorAadhaarNumber;
     }
+
+	public String getGuarantorFullAddress() {
+		return guarantorFullAddress;
+	}
+
+	public void setGuarantorFullAddress(String guarantorFullAddress) {
+		this.guarantorFullAddress = guarantorFullAddress;
+	}
+    
 }

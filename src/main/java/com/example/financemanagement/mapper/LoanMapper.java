@@ -21,18 +21,23 @@ public interface LoanMapper {
 	@Mapping(source = "loanAmount", target = "loanAmount")
     @Mapping(source = "interestRate", target = "interestRate")
     @Mapping(source = "tenure", target = "tenure")
+	@Mapping(source="loanCreationDate", target="loanCreationDate")
     Loan toLoanEntity(LoanRequestDTO loanRequest);
 	
 	
 	 @Mapping(source = "customerName", target = "name")
 	 @Mapping(source = "customerPhonePrimary", target = "phoneNumberPrimary")
-	 @Mapping(source = "customerAddress", target = "address")
+	 @Mapping(source = "customerFullAddress", target = "address")
+	 @Mapping(source="customerAadhaarNumber", target="aadhaarNumber")
+	 @Mapping(source="customerFatherName", target = "fatherName")
+	 @Mapping(source="customerPhoneSecondary", target = "phoneNumberSecondary")
 	 Customer toCustomerEntity(LoanRequestDTO loanRequest);
 	
 	 
 	 @Mapping(source = "guarantorName", target = "name")
 	 @Mapping(source = "guarantorPhonePrimary", target = "phoneNumberPrimary")
-	 @Mapping(source = "guarantorAddress", target = "address")
+	 @Mapping(source = "guarantorFullAddress", target = "address")
+	 @Mapping(source = "guarantorAadhaarNumber", target = "aadhaarNumber")
 	 Guarantor toGuarantorEntity(LoanRequestDTO loanRequest);
 
 	 

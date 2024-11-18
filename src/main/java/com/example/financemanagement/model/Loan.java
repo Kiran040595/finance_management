@@ -1,5 +1,7 @@
 package com.example.financemanagement.model;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,7 +21,7 @@ public class Loan {
     private Double interestRate;
     private Integer emi;
     private Integer tenure;
-
+    private Date loanCreationDate;
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
@@ -102,6 +104,14 @@ public class Loan {
 
 	public void setGuarantor(Guarantor guarantor) {
 		this.guarantor = guarantor;
+	}
+
+	public Date getLoanCreationDate() {
+		return loanCreationDate;
+	}
+
+	public void setLoanCreationDate(Date loanCreationDate) {
+		this.loanCreationDate = loanCreationDate;
 	}
 
     // Getters and Setters
