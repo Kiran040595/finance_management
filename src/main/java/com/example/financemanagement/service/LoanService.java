@@ -1,6 +1,9 @@
 package com.example.financemanagement.service;
 
+import com.example.financemanagement.dto.FullLoanDetailsDTO;
 import com.example.financemanagement.dto.LoanDTO;
+import com.example.financemanagement.dto.LoanRequestDTO;
+import com.example.financemanagement.dto.LoanResponseDTO;
 import com.example.financemanagement.model.Loan;
 import com.example.financemanagement.repository.LoanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +15,15 @@ import java.util.Optional;
 @Service
 public interface LoanService {
 	
-	LoanDTO createLoan(LoanDTO loanDTO);
+	
+	List<LoanResponseDTO> getAllLoans();
+	
+	LoanDTO getLoanById(Long id);
+	public void createLoan(LoanRequestDTO loanRequest);
    
+	FullLoanDetailsDTO getFullLoanDetailsById(Long loanId);
+	
+	
     
     
     

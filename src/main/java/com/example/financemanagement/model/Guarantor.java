@@ -6,7 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Customer {
+public class Guarantor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +17,6 @@ public class Customer {
     private String phoneNumberSecondary;
     private String address;
     private String aadhaarNumber;
-    private String fatherName;
 	public Long getId() {
 		return id;
 	}
@@ -54,16 +53,8 @@ public class Customer {
 	public void setAadhaarNumber(String aadhaarNumber) {
 		this.aadhaarNumber = aadhaarNumber;
 	}
-	public String getFatherName() {
-		return fatherName;
-	}
-	public void setFatherName(String fatherName) {
-		this.fatherName = fatherName;
-	}
-
+    
     
     
     // Getters and Setters
-    
-    
 }
