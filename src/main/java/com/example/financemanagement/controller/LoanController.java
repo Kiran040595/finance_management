@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.financemanagement.dto.FullLoanDetailsDTO;
 import com.example.financemanagement.dto.LoanDTO;
 import com.example.financemanagement.dto.LoanRequestDTO;
+import com.example.financemanagement.dto.LoanResponseDTO;
 import com.example.financemanagement.service.LoanService;
 
 @RestController
@@ -36,15 +38,17 @@ public class LoanController {
     
     
     @GetMapping("/loans")
-    public List<LoanDTO> getAllLoans(){
+    public List<LoanResponseDTO> getAllLoans(){
     	return loanService.getAllLoans();
     	
     }
     
     
     @GetMapping("/{id}")
-    public LoanDTO getLoanById(@PathVariable Long id) {
-    	return loanService.getLoanById(id);
+    public ResponseEntity<FullLoanDetailsDTO> getLoanById(@PathVariable Long id) {
+        FullLoanDetailsDTO loanDetails = loanService.getFullLoanDetailsById(id);
+
+        return ResponseEntity.ok(loanDetails);
     }
    
     
