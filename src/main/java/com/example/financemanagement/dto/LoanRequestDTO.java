@@ -1,6 +1,7 @@
 package com.example.financemanagement.dto;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 public class LoanRequestDTO {
 
@@ -10,7 +11,7 @@ public class LoanRequestDTO {
     private Double  emi; // Monthly EMI (calculated elsewhere, if needed)
     private Integer tenure; // Loan tenure in months
     private String fileNumber; // Unique Identifier for Loan
-    private LocalDate loanCreationDate;
+    private Date loanCreationDate;
 
     // Customer Details
     private String customerName;
@@ -175,11 +176,13 @@ public class LoanRequestDTO {
 
   
 
-    public LocalDate getLoanCreationDate() {
+   
+
+	public Date getLoanCreationDate() {
 		return loanCreationDate;
 	}
 
-	public void setLoanCreationDate(LocalDate loanCreationDate) {
+	public void setLoanCreationDate(Date loanCreationDate) {
 		this.loanCreationDate = loanCreationDate;
 	}
 
