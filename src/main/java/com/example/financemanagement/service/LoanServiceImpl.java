@@ -1,9 +1,11 @@
 package com.example.financemanagement.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ import com.example.financemanagement.repository.LoanRepository;
 import com.example.financemanagement.repository.VehicleRepository;
 
 @Service
+@Transactional
 public class LoanServiceImpl implements LoanService {
 
     @Autowired
@@ -43,7 +46,7 @@ public class LoanServiceImpl implements LoanService {
         Vehicle vehicle = loanMapper.toVehicleEntity(loanRequestDTO);
         Loan loan = loanMapper.toLoanEntity(loanRequestDTO);
         
-        
+          
      // Save Entities in Database
         customer = customerRepository.save(customer);
         guarantor = guarantorRepository.save(guarantor);
@@ -56,6 +59,56 @@ public class LoanServiceImpl implements LoanService {
         loanRepository.save(loan);
        
     }
+    
+    @Override
+    public void  updateLoan(Long id,LoanRequestDTO loanRequestDTO) {
+    	Loan existingLoan = loanRepository.findById(id)
+    	        .orElseThrow(() -> new RuntimeException("Loan not found with ID: " + id));
+    	
+    	// Update Loan fields
+    	existingLoan.setFileNumber(loanRequestDTO.getFileNumber());
+    	existingLoan.setLoanAmount(loanRequestDTO.getLoanAmount());
+    	existingLoan.setInterestRate(loanRequestDTO.getInterestRate());
+    	existingLoan.setEmi(loanRequestDTO.getEmi());
+    	existingLoan.setTenure(loanRequestDTO.getTenure());
+    	existingLoan.setLoanCreationDate(loanRequestDTO.getLoanCreationDate());
+
+    	Customer existingCustomer = existingLoan.getCustomer();
+        existingCustomer.setName(loanRequestDTO.getCustomerName());
+        existingCustomer.setPhoneNumberPrimary(loanRequestDTO.getCustomerPhonePrimary());
+        existingCustomer.setPhoneNumberSecondary(loanRequestDTO.getCustomerPhoneSecondary());
+        existingCustomer.setAddress(loanRequestDTO.getCustomerAadhaarNumber());
+        existingCustomer.setAadhaarNumber(loanRequestDTO.getCustomerAadhaarNumber());
+        existingCustomer.setFatherName(loanRequestDTO.getCustomerFatherName());
+
+        customerRepository.save(existingCustomer);
+
+        // Update Guarantor
+        Guarantor existingGuarantor = existingLoan.getGuarantor();
+        existingGuarantor.setName(loanRequestDTO.getGuarantorName());
+        existingGuarantor.setPhoneNumberPrimary(loanRequestDTO.getGuarantorPhonePrimary());
+        existingGuarantor.setPhoneNumberSecondary(loanRequestDTO.getGuarantorPhonePrimary());
+        existingGuarantor.setAddress(loanRequestDTO.getGuarantorFullAddress());
+        existingGuarantor.setAadhaarNumber(loanRequestDTO.getGuarantorAadhaarNumber());
+
+        guarantorRepository.save(existingGuarantor);
+
+        // Update Vehicle
+        Vehicle existingVehicle = existingLoan.getVehicle();
+        existingVehicle.setVehicleNumber(loanRequestDTO.getVehicleNumber());
+        existingVehicle.setModelYear(loanRequestDTO.getVehicleModelYear());
+        existingVehicle.setInsuranceExpiryDate(loanRequestDTO.getVehicleInsuranceExpiryDate());
+
+        vehicleRepository.save(existingVehicle);
+
+        // Save the updated Loan
+        loanRepository.save(existingLoan);
+
+    	
+    }
+    
+    
+    
 
 	
 
@@ -111,5 +164,14 @@ public class LoanServiceImpl implements LoanService {
 	public LoanDTO getLoanById(Long id) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	
+	@Override
+	public void deleteLoan(Long id) {
+		Loan existingLoan = loanRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Loan not found with ID: " + id));
+		loanRepository.delete(existingLoan);
+
 	}
 }

@@ -20,7 +20,7 @@ public class Loan {
     private String fileNumber;  // Unique Identifier
     private Double loanAmount;
     private Double interestRate;
-    private Integer emi;
+    private Double emi;
     private Integer tenure;
     private Date loanCreationDate;
     @ManyToOne
@@ -67,11 +67,13 @@ public class Loan {
 		this.interestRate = interestRate;
 	}
 
-	public Integer getEmi() {
+	
+
+	public Double getEmi() {
 		return emi;
 	}
 
-	public void setEmi(Integer emi) {
+	public void setEmi(Double emi) {
 		this.emi = emi;
 	}
 

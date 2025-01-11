@@ -23,6 +23,12 @@ public interface LoanService {
    
 	FullLoanDetailsDTO getFullLoanDetailsById(Long loanId);
 	
+	public void updateLoan(Long id,LoanRequestDTO loanRequest);
+	
+	 public void deleteLoan(Long id);
+	
+	
+	
 	
     
     
