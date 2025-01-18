@@ -1,7 +1,9 @@
 package com.example.financemanagement.service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -18,9 +20,11 @@ import com.example.financemanagement.mapper.LoanMapper;
 import com.example.financemanagement.model.Customer;
 import com.example.financemanagement.model.Guarantor;
 import com.example.financemanagement.model.Loan;
+import com.example.financemanagement.model.LoanEmi;
 import com.example.financemanagement.model.Vehicle;
 import com.example.financemanagement.repository.CustomerRepository;
 import com.example.financemanagement.repository.GuarantorRepository;
+import com.example.financemanagement.repository.LoanEmiRepository;
 import com.example.financemanagement.repository.LoanRepository;
 import com.example.financemanagement.repository.VehicleRepository;
 
@@ -38,6 +42,9 @@ public class LoanServiceImpl implements LoanService {
     private GuarantorRepository guarantorRepository;
     @Autowired
     private LoanMapper loanMapper;
+    
+    @Autowired
+    private LoanEmiRepository loanEmiRepository;
 
     @Override
     public void createLoan(LoanRequestDTO loanRequestDTO) {
@@ -45,6 +52,10 @@ public class LoanServiceImpl implements LoanService {
         Guarantor guarantor = loanMapper.toGuarantorEntity(loanRequestDTO);
         Vehicle vehicle = loanMapper.toVehicleEntity(loanRequestDTO);
         Loan loan = loanMapper.toLoanEntity(loanRequestDTO);
+        
+        
+        
+       
         
           
      // Save Entities in Database
@@ -56,10 +67,35 @@ public class LoanServiceImpl implements LoanService {
         loan.setGuarantor(guarantor);
         loan.setVehicle(vehicle);
         
-        loanRepository.save(loan);
+        Loan savedLoan = loanRepository.save(loan);
+        
+        List<LoanEmi> emiList = generateEmiSchedule(savedLoan);
+        loanEmiRepository.saveAll(emiList);
+        
        
     }
     
+    @Override
+    public List<LoanEmi> generateEmiSchedule(Loan loan){
+        List<LoanEmi> emiList = new ArrayList<>();
+        LocalDate startDate = loan.getLoanCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    	Integer tenure  = loan.getTenure();
+        double emiAmount = loan.getEmi();
+
+        for (int i=0; i<tenure ; i++) {
+        	LoanEmi emi = new LoanEmi();
+        	emi.setEmiNumber(i+1);
+        	emi.setEmiAmount(emiAmount);
+        	emi.setLoan(loan);
+        	emi.setPaidAmount(0.0);
+        	emi.setEmiDate(startDate.plusMonths(i));
+        	emi.setRemainingAmount(emiAmount);
+        	emiList.add(emi);	
+        	
+        }
+        return emiList;	
+    }
+     
     @Override
     public void  updateLoan(Long id,LoanRequestDTO loanRequestDTO) {
     	Loan existingLoan = loanRepository.findById(id)
@@ -157,6 +193,10 @@ public class LoanServiceImpl implements LoanService {
 	        }
 	        return LoanMapper.toFullLoanDetailsDTO(loan);
 	    }
+	 
+	
+
+
 
 
 
