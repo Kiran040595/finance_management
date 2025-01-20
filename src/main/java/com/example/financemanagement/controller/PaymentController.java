@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController; // To mark it as 
 
 import com.example.financemanagement.dto.PaymentDTO;
 import com.example.financemanagement.dto.PaymentRequestDTO;
+import com.example.financemanagement.dto.PaymentResponse;
 import com.example.financemanagement.model.LoanEmi;
 import com.example.financemanagement.service.LoanService;
 import com.example.financemanagement.service.PaymentService;
@@ -33,7 +34,7 @@ public class PaymentController {
     private LoanService loanService;
 
 	@GetMapping("/payments")
-	public ResponseEntity<Page<PaymentDTO>> getPayments(
+	public ResponseEntity<PaymentResponse> getPayments(
 	        @RequestParam(defaultValue = "") String searchQuery,
 	        @RequestParam(defaultValue = "0") int page,
 	        @RequestParam(defaultValue = "10") int size,
@@ -44,8 +45,8 @@ public class PaymentController {
 	            "desc".equalsIgnoreCase(sortDirection) 
 	            ? Sort.by(sortKey).descending() 
 	            : Sort.by(sortKey).ascending());
-	    Page<PaymentDTO> payments = paymentService.getAllPayments(searchQuery, pageable);
-	    return ResponseEntity.ok(payments);
+	    PaymentResponse response = paymentService.getAllPayments(searchQuery, pageable);
+	    return ResponseEntity.ok(response);
 	}
 
 
