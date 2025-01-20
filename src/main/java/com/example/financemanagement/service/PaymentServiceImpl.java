@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.financemanagement.dto.PaymentDTO;
+import com.example.financemanagement.dto.PaymentResponse;
 import com.example.financemanagement.mapper.PaymentMapper;
 import com.example.financemanagement.model.Loan;
 import com.example.financemanagement.model.LoanEmi;
@@ -39,13 +40,17 @@ public class PaymentServiceImpl implements PaymentService {
 	
 	private boolean update = false;
 	@Override
-	public Page<PaymentDTO> getAllPayments(String searchQuery, Pageable pageable) {
+	public PaymentResponse  getAllPayments(String searchQuery, Pageable pageable) {
 		// Step 1: Fetch loans with pagination and filtering
 		Page<Loan> loans = loanRepository.findBySearchQuery(searchQuery, pageable);
-
 		
-		return loans.map(loan -> {
-			// Check if the loan has already been updated today
+		// Initialize totals for pending EMI count and amount
+	    long totalLoans = loans.getTotalElements();  // This gives the total loan count
+	    long pendingEmiCount = loanEmiRepository.fetchTotalPendingEmiCount();
+	    double pendingEmiAmount = loanEmiRepository.fetchTotaPendingEmiAmount();
+	    long pendingCustomerCount = loanEmiRepository.countPendingCustomers(); 
+		
+	    Page<PaymentDTO> paymentDTOPage= loans.map(loan -> {
 			Set<String> phoneNumbers = new HashSet<>(Arrays.asList());
 			collectPhoneNumbers(loan, phoneNumbers);
 			updateTotalamounts(loan,update);
@@ -53,6 +58,8 @@ public class PaymentServiceImpl implements PaymentService {
 			paymentDTO.setPhoneNumbers(phoneNumbers);
 			return paymentDTO;
 		});
+	    
+	    return new PaymentResponse(paymentDTOPage, totalLoans, pendingEmiCount, pendingEmiAmount,pendingCustomerCount);
 	}
 
 	@Override
@@ -93,6 +100,7 @@ public class PaymentServiceImpl implements PaymentService {
 		Optional<Loan> loan = loanRepository.findByFileNumber(loanId.toString());
 		Long id = loan.get().getId();
 		updateTotalamounts(loan.get(),true);
+		calculateDaysSinceLastUnpaidEmi(id,true);
 		LoanEmi loanEmi = loanEmiRepository.findByLoanIdAndEmiNumber(id, emiNumber);
 
 		if (loanEmi == null) {
@@ -161,7 +169,7 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 
 	// Method to calculate the number of days passed since the last unpaid EMI
-	public long calculateDaysSinceLastUnpaidEmi(Long loanId) {
+	public long calculateDaysSinceLastUnpaidEmi(Long loanId, Boolean update) {
 		Loan loan = loanRepository.findById(loanId).orElseThrow(() -> new RuntimeException("Loan not found"));
 
 		// Find the first unpaid EMI (Pending status)
@@ -203,7 +211,7 @@ public class PaymentServiceImpl implements PaymentService {
 
 			Double loanOD = (double) Math.round(calculateLoanOD(loan));
 			Double totalPendingEmiAmount = Math.ceil(calculateTotalPendingEmiAmount(loan));
-			long pendingDays = calculateDaysSinceLastUnpaidEmi(loan.getId());
+			long pendingDays = calculateDaysSinceLastUnpaidEmi(loan.getId(),true);
 
 			// Update the loan entity with new values and set the lastUpdated timestamp
 			loan.setOverdueAmount(loanOD);

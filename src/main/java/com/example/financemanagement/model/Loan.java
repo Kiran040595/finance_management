@@ -14,7 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.PreUpdate;
+import javax.persistence.PrePersist;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -40,7 +40,11 @@ public class Loan {
     private Double totalPendingEmiAmount; // Calculated at loan level
     private Long pendingDays;
     private LocalDate lastUpdated;
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT true")
+    private Boolean status = true;
+
 	
+    
 
 	@ManyToOne
 	@JoinColumn(name = "customer_id")
@@ -207,8 +211,30 @@ public class Loan {
 	public void setLastUpdated(LocalDate lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
+	
+	
+	@PrePersist
+    public void setLastUpdatedBeforeSave() {
+        if (this.lastUpdated == null) {
+            this.lastUpdated = LocalDate.now(); // Set current time if not already set
+        }
+    }
 
 
+	public Boolean getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(Boolean status) {
+		this.status = status;
+	}
+
+
+	
+
+
+	
 	
 	// Getters and Setters
 }

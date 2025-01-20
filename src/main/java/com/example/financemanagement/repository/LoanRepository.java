@@ -45,7 +45,10 @@ public interface LoanRepository extends JpaRepository<Loan, Long>, JpaSpecificat
                 cb.like(cb.lower(root.get("fileNumber")), likePattern),
                 cb.like(cb.lower(root.get("customer").get("name")), likePattern),
                 cb.like(cb.lower(root.get("vehicle").get("vehicleNumber")), likePattern)
-            );
+            );	
+            
+            Predicate statusPredicate = cb.equal(root.get("status"), true); // Filter by active status
+            searchPredicate = cb.and(searchPredicate, statusPredicate);
 
             // Apply dynamic sorting based on the 'Pageable' object
             List<javax.persistence.criteria.Order> orders = pageable.getSort().stream()
