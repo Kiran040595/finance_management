@@ -28,7 +28,7 @@ public interface LoanRepository extends JpaRepository<Loan, Long>, JpaSpecificat
             "WHERE l.id = :loanId")
     Loan findLoanWithDetailsById(@Param("loanId") Long loanId);
 
-    Optional<Loan> findByFileNumber(String fileNumber);
+    Optional<Loan> findByFileNumber(Long fileNumber);
 
     Long getLoanIdByFileNumber(Long loanId);
 
@@ -42,10 +42,14 @@ public interface LoanRepository extends JpaRepository<Loan, Long>, JpaSpecificat
 
             // Build search predicates for multiple fields
             Predicate searchPredicate = cb.or(
-                cb.like(cb.lower(root.get("fileNumber")), likePattern),
-                cb.like(cb.lower(root.get("customer").get("name")), likePattern),
-                cb.like(cb.lower(root.get("vehicle").get("vehicleNumber")), likePattern)
-            );	
+            	    // Check if searchQuery is not empty before converting to Long
+            	    searchQuery != null && !searchQuery.isEmpty() 
+            	        ? cb.equal(root.get("fileNumber"), Long.valueOf(searchQuery))  // Exact match for fileNumber
+            	        : cb.conjunction(),  // Skip this condition if searchQuery is empty
+            	    cb.like(cb.lower(root.get("customer").get("name")), likePattern),
+            	    cb.like(cb.lower(root.get("vehicle").get("vehicleNumber")), likePattern)
+            	);
+
             
             Predicate statusPredicate = cb.equal(root.get("status"), true); // Filter by active status
             searchPredicate = cb.and(searchPredicate, statusPredicate);
