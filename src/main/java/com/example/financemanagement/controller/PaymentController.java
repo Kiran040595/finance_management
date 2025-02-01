@@ -57,7 +57,7 @@ public class PaymentController {
 	
 	// New endpoint: Get loan details by fileNumber
     @GetMapping("/payments/{fileNumber}")
-    public PaymentDTO getLoanDetailsByFileNumber(@PathVariable String fileNumber) {
+    public PaymentDTO getLoanDetailsByFileNumber(@PathVariable Long fileNumber) {
     	return paymentService.getLoanDetailsByFileNumber(fileNumber);
         
     }

@@ -4,12 +4,14 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.financemanagement.dto.FullLoanDetailsDTO;
@@ -98,8 +100,7 @@ public class LoanServiceImpl implements LoanService {
      
     @Override
     public void  updateLoan(Long id,LoanRequestDTO loanRequestDTO) {
-    	Loan existingLoan = loanRepository.findById(id)
-    	        .orElseThrow(() -> new RuntimeException("Loan not found with ID: " + id));
+    	Loan existingLoan = loanRepository.findByFileNumber(id).get();
     	
     	// Update Loan fields
     	existingLoan.setFileNumber(loanRequestDTO.getFileNumber());
@@ -151,15 +152,16 @@ public class LoanServiceImpl implements LoanService {
 	@Override
 	public List<LoanResponseDTO> getAllLoans() {
 		
-		List<Loan> loans = loanRepository.findAll();
+		List<Loan> loans = loanRepository.findAll(Sort.by(Sort.Direction.ASC, "fileNumber"));
+
 		
 		
 		return loans.stream()
 				.map(loan-> {
-					Customer customer = customerRepository.findById(loan.getId())
-			 				.orElseThrow(() -> new RuntimeException("Customer not found"));
-			 		Vehicle vehicle = vehicleRepository.findById(loan.getId())
-			 				.orElseThrow(() -> new RuntimeException("Vehicle not found"));
+					Customer customer = loan.getCustomer();                               //customerRepository.findById(loan.getId())
+			 				//.orElseThrow(() -> new RuntimeException("Customer not found"));
+			 		Vehicle vehicle = loan.getVehicle();//vehicleRepository.findById(loan.getId());
+			 				//.orElseThrow(() -> new RuntimeException("Vehicle not found"));
 			 
 			 return toLoanViewDTO(loan, customer, vehicle);
 		})
@@ -187,7 +189,8 @@ public class LoanServiceImpl implements LoanService {
 	
 	 @Override
 	    public FullLoanDetailsDTO getFullLoanDetailsById(Long loanId) {
-	        Loan loan = loanRepository.findLoanWithDetailsById(loanId);
+	        Loan loan = loanRepository.findByFileNumber(loanId).get();
+	         
 	        if (loan == null) {
 	            throw new EntityNotFoundException("Loan not found with ID: " + loanId);
 	        }
@@ -209,8 +212,7 @@ public class LoanServiceImpl implements LoanService {
 	
 	@Override
 	public void deleteLoan(Long id) {
-		Loan existingLoan = loanRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Loan not found with ID: " + id));
+		Loan existingLoan = loanRepository.findByFileNumber(id).get();
 		loanRepository.delete(existingLoan);
 
 	}

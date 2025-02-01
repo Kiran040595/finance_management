@@ -34,7 +34,7 @@ public class LoanController {
     @PostMapping
     public ResponseEntity<String> createLoan(@RequestBody LoanRequestDTO loanDTO){
     	loanService.createLoan(loanDTO);
-    	return ResponseEntity.ok("Loan created successfully!");
+    	return ResponseEntity.status(HttpStatus.CREATED).body("Loan created successfully");
     	
     }
     

@@ -4,7 +4,7 @@ public class LoanDTO {
 
 	
     private Long id;
-	private String fileNumber;
+	private Long fileNumber;
     private String customerName;
     private double loanAmount;
     private int tenure;
@@ -13,10 +13,10 @@ public class LoanDTO {
     private String insuranceValidity;
     private double emi;
     
-	public String getFileNumber() {
+	public Long getFileNumber() {
 		return fileNumber;
 	}
-	public void setFileNumber(String fileNumber) {
+	public void setFileNumber(Long fileNumber) {
 		this.fileNumber = fileNumber;
 	}
 	public String getCustomerName() {

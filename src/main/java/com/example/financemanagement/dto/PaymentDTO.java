@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class PaymentDTO {
     private Long loanId;
-    private String fileNumber;
+    private Long fileNumber;
     private String customerName;
     private Double loanAmount;
     private String vehicleNumber;
@@ -42,11 +42,11 @@ public class PaymentDTO {
         this.loanId = loanId;
     }
 
-    public String getFileNumber() {
+    public Long getFileNumber() {
         return fileNumber;
     }
 
-    public void setFileNumber(String fileNumber) {
+    public void setFileNumber(Long fileNumber) {
         this.fileNumber = fileNumber;
     }
 

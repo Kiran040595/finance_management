@@ -10,7 +10,7 @@ public class LoanResponseDTO {
     
     private Double loanAmount; 
     
-    private String fileNumber; 
+    private Long fileNumber; 
     
     private Double emi;
     
@@ -36,11 +36,11 @@ public class LoanResponseDTO {
 		this.loanAmount = loanAmount;
 	}
 
-	public String getFileNumber() {
+	public Long getFileNumber() {
 		return fileNumber;
 	}
 
-	public void setFileNumber(String fileNumber) {
+	public void setFileNumber(Long fileNumber) {
 		this.fileNumber = fileNumber;
 	}
 

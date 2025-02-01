@@ -10,7 +10,7 @@ public class LoanRequestDTO {
     private Double interestRate;
     private Double  emi; // Monthly EMI (calculated elsewhere, if needed)
     private Integer tenure; // Loan tenure in months
-    private String fileNumber; // Unique Identifier for Loan
+    private Long fileNumber; // Unique Identifier for Loan
     private Date loanCreationDate;
 
     // Customer Details
@@ -68,11 +68,11 @@ public class LoanRequestDTO {
         this.tenure = tenure;
     }
 
-    public String getFileNumber() {
+    public Long getFileNumber() {
         return fileNumber;
     }
 
-    public void setFileNumber(String fileNumber) {
+    public void setFileNumber(Long fileNumber) {
         this.fileNumber = fileNumber;
     }
 

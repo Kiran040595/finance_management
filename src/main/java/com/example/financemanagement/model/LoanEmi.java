@@ -1,6 +1,8 @@
 package com.example.financemanagement.model;
 
 import java.time.LocalDate;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,13 +19,17 @@ public class LoanEmi {
     private Long id;
 
     private Integer emiNumber; // EMI Sequence Number (1, 2, 3, etc.)
+    @Column(precision = 10, scale = 2) 
     private Double emiAmount; // Total EMI Amount
+    @Column(precision = 10, scale = 2) 
     private Double paidAmount = 0.0; // Amount Paid (default: 0)
+    @Column(precision = 10, scale = 2) 
     private Double remainingAmount; // Remaining Amount (calculated dynamically)
     private LocalDate paymentDate; // Last Payment Date
     private LocalDate emiDate;
     private String status = "Pending"; // EMI Status: "Pending", "Paid", or "Overpaid"
-
+    @Column(precision = 10, scale = 2) 
+    private Double odAmountAfterPaymnet = 0.0;
     @ManyToOne
     @JoinColumn(name = "loan_id")
     @JsonBackReference
@@ -94,8 +100,6 @@ public class LoanEmi {
         this.loan = loan;
     }
     
-    
-    
     public LocalDate getEmiDate() {
 		return emiDate;
 	}
@@ -103,20 +107,31 @@ public class LoanEmi {
 	public void setEmiDate(LocalDate emiDate) {
 		this.emiDate = emiDate;
 	}
+	
+	public Double getOdAmountAfterPaymnet() {
+		return odAmountAfterPaymnet;
+	}
+
+	public void setOdAmountAfterPaymnet(Double odAmountAfterPaymnet) {
+		this.odAmountAfterPaymnet = odAmountAfterPaymnet;
+	}
 
 	// Utility Method to Update Payment
-    public void updatePayment(double paymentAmount) {
+    public void updatePayment(double paymentAmount,Double od) {
         this.paidAmount += paymentAmount;
-        this.remainingAmount = this.emiAmount - this.paidAmount;
+        this.remainingAmount = this.emiAmount+od - this.paidAmount;
+        Double reainingAmountWithoutOD = this.emiAmount-this.paidAmount;
 
-        if (this.remainingAmount < -100) {
+        if (reainingAmountWithoutOD < -100) {
             this.status = "Overpaid";
-        } else if (this.remainingAmount  <=0) {
+            this.paymentDate = LocalDate.now();
+        } else if (reainingAmountWithoutOD  <=0) {
             this.status = "Paid";
+            this.paymentDate = LocalDate.now();
         } else {
             this.status = "Pending";
         }
 
-        this.paymentDate = LocalDate.now(); // Update payment date to current date
+         // Update payment date to current date
     }
 }

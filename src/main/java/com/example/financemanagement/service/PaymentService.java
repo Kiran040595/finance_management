@@ -10,7 +10,7 @@ public interface PaymentService {
 	
 	public PaymentResponse getAllPayments(String searchQuery, Pageable  pageable);
 	PaymentDTO getPaymentDetails(Long loanId);
-	public PaymentDTO getLoanDetailsByFileNumber(String fileNumber);
+	public PaymentDTO getLoanDetailsByFileNumber(Long fileNumber);
 	public LoanEmi payEmi(Long loanId, Integer emiNumber, Double paymentAmount);
 
 }

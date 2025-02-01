@@ -26,18 +26,21 @@ public class Loan {
 	private Long id;
 
 	@Column(nullable = false, unique = true)
-	private String fileNumber; // Unique Identifier
+	private Long fileNumber; // Unique Identifier
 
 	private Double loanAmount;
+	@Column(precision = 10, scale = 2) 
 	private Double interestRate;
+	@Column(precision = 10, scale = 2) 
 	private Double emi;
 	private Integer tenure;
 	private Date loanCreationDate;
 	private Integer paidEmiCount = 0; // Track the number of EMIs paid
 	private Integer remainingEmiCount;
-	
+	@Column(precision = 10, scale = 2) 
 	private Double overdueAmount; // Calculated at loan level
-    private Double totalPendingEmiAmount; // Calculated at loan level
+	@Column(precision = 10, scale = 2) 
+    private Double totalPendingEmiAmount; // Total Pending Amount which meats Emi Date
     private Long pendingDays;
     private LocalDate lastUpdated;
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT true")
@@ -75,11 +78,11 @@ public class Loan {
 		this.id = id;
 	}
 
-	public String getFileNumber() {
+	public Long getFileNumber() {
 		return fileNumber;
 	}
 
-	public void setFileNumber(String fileNumber) {
+	public void setFileNumber(Long fileNumber) {
 		this.fileNumber = fileNumber;
 	}
 
