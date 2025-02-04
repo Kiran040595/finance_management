@@ -4,6 +4,7 @@ import com.example.financemanagement.dto.FullLoanDetailsDTO;
 import com.example.financemanagement.dto.LoanDTO;
 import com.example.financemanagement.dto.LoanRequestDTO;
 import com.example.financemanagement.dto.LoanResponseDTO;
+import com.example.financemanagement.dto.LoanStatsDTO;
 import com.example.financemanagement.model.Loan;
 import com.example.financemanagement.model.LoanEmi;
 import com.example.financemanagement.repository.LoanRepository;
@@ -29,6 +30,8 @@ public interface LoanService {
 	 public void deleteLoan(Long id);
 	 
 	 public List<LoanEmi> generateEmiSchedule(Loan loan);
+	 
+	 public LoanStatsDTO getLoanStatistics();
 
 	
 	

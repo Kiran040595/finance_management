@@ -87,5 +87,31 @@ public interface LoanRepository extends JpaRepository<Loan, Long>, JpaSpecificat
             return searchPredicate;
         }, pageable);
     }
+    
+    //Loan Managemnt DashBoard Data code
+    
+    	@Query("SELECT COALESCE(SUM (l.loanAmount),0) FROM Loan l")
+    	double getTotalLoanAmount();
+    	
+    	@Query("SELECT COALESCE(SUM(e.paidAmount), 0) FROM LoanEmi e JOIN e.loan l")
+    	double getTotalReceivedAmount();
+
+    	
+    	@Query("SELECT COALESCE(SUM(l.loanAmount) - SUM(e.paidAmount), 0) FROM Loan l LEFT JOIN LoanEmi e ON l.id = e.loan.id")
+    	double getTotalOutstandingAmount();
+
+
+ 
+    
+    	@Query("SELECT COUNT(l) FROM Loan l WHERE l.status = 'True'")
+    	int getActiveLoanCount();
+    	
+    	@Query("SELECT COUNT(l) FROM Loan l WHERE l.status = 'False'")
+    	int getClosedLoanCount();
+
+    
+    
+    
+    
 
 }

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -85,12 +86,12 @@ public class PaymentServiceImpl implements PaymentService {
 				.collect(Collectors.toList());
 		
 		sortedEmis.forEach(emi -> {
-	        Double overdueAmount = calculateEmiOD(emi);
+	        Double overdueAmount = calculateEmiOD(emi,null);
 	        // If remainingAmount is null, consider emiAmount as the overdue amount
 	        if (emi.getRemainingAmount() == null) {
 	            emi.setRemainingAmount(emi.getEmiAmount() + overdueAmount); // Set remaining amount to EMI amount + overdue amount
 	        } else if(emi.getPaidAmount()<emi.getEmiAmount()) {
-	            emi.setRemainingAmount(emi.getRemainingAmount() + overdueAmount); // Add overdue amount to existing remainingAmount
+	            emi.setRemainingAmount(emi.getEmiAmount()-emi.getPaidAmount() + overdueAmount); // Add overdue amount to existing remainingAmount
 	        }
 	    });
 
@@ -99,7 +100,7 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 
 	@Override
-	public LoanEmi payEmi(Long loanId, Integer emiNumber, Double paymentAmount) {
+	public LoanEmi payEmi(Long loanId, Integer emiNumber, Double paymentAmount,LocalDate paidDate) {
 		// Find the LoanEMI record for the given loanId and emiNumber
 
 		Optional<Loan> loan = loanRepository.findByFileNumber(loanId);
@@ -112,17 +113,17 @@ public class PaymentServiceImpl implements PaymentService {
 		}
 
 		// Update the payment details
-		loanEmi.updatePayment(paymentAmount,calculateEmiOD(loanEmi));
+		loanEmi.updatePayment(paymentAmount,calculateEmiOD(loanEmi,paidDate),paidDate);
 		if (loanEmi.getPaidAmount() >= loanEmi.getEmiAmount() - 30) {
 			if (null == loan.get().getPaidEmiCount()) {
 				loan.get().setPaidEmiCount(0); // Initialize to zero if not set
 			}
-			if(loanEmi.getPaymentDate().equals(LocalDate.now())) {
+			if(loanEmi.getPaymentDate().equals(paidDate)) {
 			loan.get().setPaidEmiCount(loan.get().getPaidEmiCount() + 1);
 			}
 			if (null == loan.get().getRemainingEmiCount()) {
 				loan.get().setRemainingEmiCount(loan.get().getTenure() - 1);
-			} else if (loanEmi.getPaymentDate().equals(LocalDate.now())){
+			} else if (loanEmi.getPaymentDate().equals(paidDate)){
 				loan.get().setRemainingEmiCount(loan.get().getRemainingEmiCount() - 1);
 			}
 		}
@@ -137,27 +138,29 @@ public class PaymentServiceImpl implements PaymentService {
 		double totalOD = 0.0;
 
 		for (LoanEmi emi : loan.getEmis()) {
-			totalOD += calculateEmiOD(emi);
+			totalOD += calculateEmiOD(emi,null);
 
 		}
 		return totalOD;
 	}
 
-	private Double calculateEmiOD(LoanEmi emi) {
+	private Double calculateEmiOD(LoanEmi emi, LocalDate paidDate) {
 	    if (emi == null || emi.getStatus() == null || emi.getEmiDate() == null) {
 	        return 0.0;
 	    }
 
 	    long overdueDays = 0;
+	    
+	    LocalDate date = paidDate!=null? paidDate:LocalDate.now();
 
 	    // Check if the EMI is "Pending" and the EMI due date has passed
-	    if (emi.getEmiDate().isBefore(LocalDate.now())) {
+	    if (emi.getEmiDate().isBefore(date)) {
 	        if (!emi.getStatus().equals("Pending") && emi.getPaidAmount() >= emi.getEmiAmount() && emi.getPaymentDate() != null) {
 	            // If the EMI is paid, calculate overdue days using the payment date
 	            overdueDays = ChronoUnit.DAYS.between(emi.getEmiDate(), emi.getPaymentDate());
 	        } else if (emi.getStatus().equals("Pending")) {
 	            // If the EMI is pending, calculate overdue days using the current date
-	            overdueDays = ChronoUnit.DAYS.between(emi.getEmiDate(), LocalDate.now());
+	            overdueDays = ChronoUnit.DAYS.between(emi.getEmiDate(), date);
 	        }
 
 	        // Return overdue amount based on the overdue days

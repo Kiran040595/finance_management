@@ -117,17 +117,17 @@ public class LoanEmi {
 	}
 
 	// Utility Method to Update Payment
-    public void updatePayment(double paymentAmount,Double od) {
+    public void updatePayment(double paymentAmount,Double od,LocalDate paidDate) {
         this.paidAmount += paymentAmount;
         this.remainingAmount = this.emiAmount+od - this.paidAmount;
         Double reainingAmountWithoutOD = this.emiAmount-this.paidAmount;
-
+        LocalDate date = paidDate!=null? paidDate:LocalDate.now();
         if (reainingAmountWithoutOD < -100) {
             this.status = "Overpaid";
-            this.paymentDate = LocalDate.now();
+            this.paymentDate = date;
         } else if (reainingAmountWithoutOD  <=0) {
             this.status = "Paid";
-            this.paymentDate = LocalDate.now();
+            this.paymentDate = date;
         } else {
             this.status = "Pending";
         }

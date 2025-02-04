@@ -71,6 +71,25 @@
             <version>1.5.2.Final</version> <!-- This processor generates code at compile time -->
             <scope>provided</scope> <!-- Processor is only needed at compile-time -->
         </dependency>
+        
+
+    <!-- Lombok -->
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.30</version> <!-- Use the latest version -->
+        <scope>provided</scope>
+    </dependency>
+
+    <!-- Annotation Processor for Lombok -->
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok-mapstruct-binding</artifactId>
+        <version>0.2.0</version>
+        <scope>provided</scope>
+    </dependency>
+
+        
 
     </dependencies>
 

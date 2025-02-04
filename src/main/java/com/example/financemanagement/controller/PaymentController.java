@@ -64,7 +64,7 @@ public class PaymentController {
     
     @PostMapping("/payments/pay/{fileNumber}")
     public LoanEmi payEmi(@RequestBody  PaymentRequestDTO paymentRequest) {
-        return paymentService.payEmi(paymentRequest.getFileNumber(), paymentRequest.getEmiNumber(), paymentRequest.getPaymentAmount());
+        return paymentService.payEmi(paymentRequest.getFileNumber(), paymentRequest.getEmiNumber(), paymentRequest.getPaymentAmount(),paymentRequest.getPaymentDate());
     }
     
     

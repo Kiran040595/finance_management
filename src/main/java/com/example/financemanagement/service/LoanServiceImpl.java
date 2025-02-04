@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -18,6 +17,7 @@ import com.example.financemanagement.dto.FullLoanDetailsDTO;
 import com.example.financemanagement.dto.LoanDTO;
 import com.example.financemanagement.dto.LoanRequestDTO;
 import com.example.financemanagement.dto.LoanResponseDTO;
+import com.example.financemanagement.dto.LoanStatsDTO;
 import com.example.financemanagement.mapper.LoanMapper;
 import com.example.financemanagement.model.Customer;
 import com.example.financemanagement.model.Guarantor;
@@ -216,4 +216,20 @@ public class LoanServiceImpl implements LoanService {
 		loanRepository.delete(existingLoan);
 
 	}
+	
+	@Override
+	public LoanStatsDTO getLoanStatistics() {
+	    long totalLoans = loanRepository.count(); // Get the total number of loans
+	    double totalLoanAmountGiven = loanRepository.getTotalLoanAmount(); // Get the total loan amount
+	    double totalAmountReceived = loanRepository.getTotalReceivedAmount(); // Get the total amount received
+	    double totalOutstandingAmount = loanRepository.getTotalOutstandingAmount(); // Get the total outstanding amount
+	    int activeLoans = loanRepository.getActiveLoanCount(); // Get the count of active loans
+	    int closedLoans = loanRepository.getClosedLoanCount(); // Get the count of closed loans
+
+	    // Create and return a LoanStatsDTO with all the gathered statistics
+	    return new LoanStatsDTO(totalLoans, totalLoanAmountGiven, totalAmountReceived, totalOutstandingAmount, activeLoans, closedLoans);
+	}
+
+	
+	
 }
