@@ -149,7 +149,14 @@ public class PaymentServiceImpl implements PaymentService {
         String formattedDate = paidDate.format(formatter);
 
 	    // Extract last sequence number and increment it
-	    int lastEmiSequence = Integer.parseInt(lastEmiBillNumber.substring(2)); 
+	    
+	    
+	    String[] parts = lastEmiBillNumber.split("-"); // Splitting by '-'
+	    String lastSequenceStr = parts[parts.length - 1]; // Get last part
+	    int lastEmiSequence = Integer.parseInt(lastSequenceStr);
+
+	    
+	    
 	    String newEmiBillNumber = "E-" + formattedDate+"-" + String.format("%06d", lastEmiSequence + 1);
 
 	    PaymentsTracking paymentsTracking = new PaymentsTracking();
