@@ -2,6 +2,7 @@ package com.example.financemanagement.service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,11 +24,13 @@ import com.example.financemanagement.model.Customer;
 import com.example.financemanagement.model.Guarantor;
 import com.example.financemanagement.model.Loan;
 import com.example.financemanagement.model.LoanEmi;
+import com.example.financemanagement.model.PaymentsTracking;
 import com.example.financemanagement.model.Vehicle;
 import com.example.financemanagement.repository.CustomerRepository;
 import com.example.financemanagement.repository.GuarantorRepository;
 import com.example.financemanagement.repository.LoanEmiRepository;
 import com.example.financemanagement.repository.LoanRepository;
+import com.example.financemanagement.repository.PaymentsTrackingRepository;
 import com.example.financemanagement.repository.VehicleRepository;
 
 @Service
@@ -47,6 +50,11 @@ public class LoanServiceImpl implements LoanService {
     
     @Autowired
     private LoanEmiRepository loanEmiRepository;
+    
+    
+    
+    @Autowired
+    private PaymentsTrackingRepository paymentsTrackingRepository;
 
     @Override
     public void createLoan(LoanRequestDTO loanRequestDTO) {
@@ -73,6 +81,34 @@ public class LoanServiceImpl implements LoanService {
         
         List<LoanEmi> emiList = generateEmiSchedule(savedLoan);
         loanEmiRepository.saveAll(emiList);
+        
+     // Generate a sequential Loan Bill Number
+        String lastBillNumber = paymentsTrackingRepository.findLastLoanBillNumber()
+                .orElse("L-000000");  // Default if no previous records
+
+        //int lastSequence = Integer.parseInt(lastBillNumber.substring(2)); 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMM"); // Format: YYYYMMDD
+        String formattedDate = loan.getLoanCreationDate().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
+                .format(formatter);
+
+        String newBillNumber = "L-" + formattedDate + "-" +(savedLoan.getFileNumber());
+
+
+        PaymentsTracking paymentsTracking = new PaymentsTracking();
+        paymentsTracking.setTransactionType("Loan Given");
+        paymentsTracking.setBillNumber(newBillNumber);
+        paymentsTracking.setTransactionDate(LocalDate.now());
+        paymentsTracking.setAmount(savedLoan.getLoanAmount());
+        paymentsTracking.setLoan(savedLoan);
+        paymentsTracking.setCustomer(savedLoan.getCustomer());
+       
+
+        // Save PaymentTracking entry
+        paymentsTrackingRepository.save(paymentsTracking);
+
+        
         
        
     }

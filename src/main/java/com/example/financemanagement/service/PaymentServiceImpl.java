@@ -1,10 +1,11 @@
 package com.example.financemanagement.service;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -21,8 +22,10 @@ import com.example.financemanagement.dto.PaymentResponse;
 import com.example.financemanagement.mapper.PaymentMapper;
 import com.example.financemanagement.model.Loan;
 import com.example.financemanagement.model.LoanEmi;
+import com.example.financemanagement.model.PaymentsTracking;
 import com.example.financemanagement.repository.LoanEmiRepository;
 import com.example.financemanagement.repository.LoanRepository;
+import com.example.financemanagement.repository.PaymentsTrackingRepository;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -38,6 +41,11 @@ public class PaymentServiceImpl implements PaymentService {
 
 	@Autowired
 	private LoanService loanService;
+	
+	 
+	 
+	 @Autowired
+	 private PaymentsTrackingRepository paymentsTrackingRepository;
 	
 	private boolean update = false;
 	@Override
@@ -118,7 +126,7 @@ public class PaymentServiceImpl implements PaymentService {
 			if (null == loan.get().getPaidEmiCount()) {
 				loan.get().setPaidEmiCount(0); // Initialize to zero if not set
 			}
-			if(loanEmi.getPaymentDate().equals(paidDate)) {
+			if(loanEmi.getPaymentDate().equals(paidDate!=null? paidDate: LocalDate.now())) {
 			loan.get().setPaidEmiCount(loan.get().getPaidEmiCount() + 1);
 			}
 			if (null == loan.get().getRemainingEmiCount()) {
@@ -131,6 +139,30 @@ public class PaymentServiceImpl implements PaymentService {
 		updateTotalamounts(loan.get(),true);
 		calculateDaysSinceLastUnpaidEmi(id,true);
 		// Save the updated LoanEMI record
+		
+		 // Fetch last EMI bill number from only EMI transactions
+	    String lastEmiBillNumber = paymentsTrackingRepository
+	            .findLastEmiBillNumber()
+	            .orElse("E-000000");  // Default if no previous records
+	    
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMM"); // Format: YYYYMMDD
+        String formattedDate = paidDate.format(formatter);
+
+	    // Extract last sequence number and increment it
+	    int lastEmiSequence = Integer.parseInt(lastEmiBillNumber.substring(2)); 
+	    String newEmiBillNumber = "E-" + formattedDate+"-" + String.format("%06d", lastEmiSequence + 1);
+
+	    PaymentsTracking paymentsTracking = new PaymentsTracking();
+	    paymentsTracking.setTransactionType("EMI Paid");
+	    paymentsTracking.setBillNumber(newEmiBillNumber);
+	    paymentsTracking.setTransactionDate(loanEmi.getPaymentDate());
+	    paymentsTracking.setAmount(loanEmi.getPaidAmount());
+	    paymentsTracking.setLoan(loanEmi.getLoan());
+	    paymentsTracking.setLoanEmi(loanEmi);
+	    paymentsTracking.setCustomer(loanEmi.getLoan().getCustomer());
+
+	    paymentsTrackingRepository.save(paymentsTracking);
+		
 		return loanEmiRepository.save(loanEmi);
 	}
 
