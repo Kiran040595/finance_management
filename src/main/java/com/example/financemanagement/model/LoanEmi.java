@@ -1,7 +1,9 @@
 package com.example.financemanagement.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -34,6 +37,10 @@ public class LoanEmi {
     @JoinColumn(name = "loan_id")
     @JsonBackReference
     private Loan loan; // The loan associated with this EMI
+    
+    @OneToMany(mappedBy = "loanEmi", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PaymentsTracking> paymentsTrackings;
+
 
     // Getters and Setters
     public Long getId() {
