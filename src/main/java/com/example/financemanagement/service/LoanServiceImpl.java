@@ -1,10 +1,13 @@
 package com.example.financemanagement.service;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -83,9 +86,14 @@ public class LoanServiceImpl implements LoanService {
         loanEmiRepository.saveAll(emiList);
         
      // Generate a sequential Loan Bill Number
-        String lastBillNumber = paymentsTrackingRepository.findLastLoanBillNumber()
-                .orElse("L-000000");  // Default if no previous records
+        List<String> billNumbers = paymentsTrackingRepository.findLastLoanBillNumbers();
+        String lastBillNumber = billNumbers.isEmpty() ? "L-000000" : billNumbers.get(0);  // ✅ Corrected
 
+
+		/*
+		 * String lastBillNumber = paymentsTrackingRepository.findLastLoanBillNumber()
+		 * .orElse("L-000000"); // Default if no previous records
+		 */
         //int lastSequence = Integer.parseInt(lastBillNumber.substring(2)); 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMM"); // Format: YYYYMMDD
         String formattedDate = loan.getLoanCreationDate().toInstant()
@@ -116,7 +124,13 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public List<LoanEmi> generateEmiSchedule(Loan loan){
         List<LoanEmi> emiList = new ArrayList<>();
-        LocalDate startDate = loan.getLoanCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        //LocalDate startDate = loan.getLoanCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        
+        LocalDate startDate = Instant.ofEpochMilli(loan.getLoanCreationDate().getTime())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        
     	Integer tenure  = loan.getTenure();
         double emiAmount = loan.getEmi();
 
@@ -126,7 +140,7 @@ public class LoanServiceImpl implements LoanService {
         	emi.setEmiAmount(emiAmount);
         	emi.setLoan(loan);
         	emi.setPaidAmount(0.0);
-        	emi.setEmiDate(startDate.plusMonths(i));
+        	emi.setEmiDate(startDate.plusMonths(i+1));
         	emi.setRemainingAmount(emiAmount);
         	emiList.add(emi);	
         	
@@ -173,12 +187,20 @@ public class LoanServiceImpl implements LoanService {
         existingVehicle.setInsuranceExpiryDate(loanRequestDTO.getVehicleInsuranceExpiryDate());
 
         vehicleRepository.save(existingVehicle);
+        
+        
+        // Check if any EMI-related fields have changed
+       
 
         // Save the updated Loan
         loanRepository.save(existingLoan);
 
     	
     }
+    
+   
+
+
     
     
     

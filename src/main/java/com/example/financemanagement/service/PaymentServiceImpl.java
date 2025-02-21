@@ -126,12 +126,12 @@ public class PaymentServiceImpl implements PaymentService {
 			if (null == loan.get().getPaidEmiCount()) {
 				loan.get().setPaidEmiCount(0); // Initialize to zero if not set
 			}
-			if(loanEmi.getPaymentDate().equals(paidDate!=null? paidDate: LocalDate.now())) {
+			if(null== loanEmi.getPaymentDate() || loanEmi.getPaymentDate().equals(paidDate!=null? paidDate: LocalDate.now())) {
 			loan.get().setPaidEmiCount(loan.get().getPaidEmiCount() + 1);
 			}
 			if (null == loan.get().getRemainingEmiCount()) {
 				loan.get().setRemainingEmiCount(loan.get().getTenure() - 1);
-			} else if (loanEmi.getPaymentDate().equals(paidDate)){
+			} else if (null==loanEmi.getPaymentDate() ||  loanEmi.getPaymentDate().equals(paidDate)){
 				loan.get().setRemainingEmiCount(loan.get().getRemainingEmiCount() - 1);
 			}
 		}
@@ -162,8 +162,8 @@ public class PaymentServiceImpl implements PaymentService {
 	    PaymentsTracking paymentsTracking = new PaymentsTracking();
 	    paymentsTracking.setTransactionType("EMI Paid");
 	    paymentsTracking.setBillNumber(newEmiBillNumber);
-	    paymentsTracking.setTransactionDate(loanEmi.getPaymentDate());
-	    paymentsTracking.setAmount(loanEmi.getPaidAmount());
+	    paymentsTracking.setTransactionDate(null!=loanEmi.getPaymentDate()? loanEmi.getPaymentDate():LocalDate.now());
+	    paymentsTracking.setAmount(paymentAmount);
 	    paymentsTracking.setLoan(loanEmi.getLoan());
 	    paymentsTracking.setLoanEmi(loanEmi);
 	    paymentsTracking.setCustomer(loanEmi.getLoan().getCustomer());

@@ -15,7 +15,7 @@ public interface PaymentsTrackingRepository extends JpaRepository<PaymentsTracki
     List<PaymentsTracking> findByLoanId(Long loanId);
 
     @Query("SELECT p.billNumber FROM PaymentsTracking p WHERE p.transactionType = 'Loan Given' ORDER BY p.id DESC")
-    Optional<String> findLastLoanBillNumber();
+    List<String> findLastLoanBillNumbers();
 
     @Query(value = "SELECT bill_number FROM finance_management.payments_tracking WHERE transaction_type = 'EMI Paid' ORDER BY id DESC LIMIT 1", 
     nativeQuery = true)
