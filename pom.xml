@@ -88,7 +88,20 @@
         <version>0.2.0</version>
         <scope>provided</scope>
     </dependency>
-
+    
+    <dependency>
+    <groupId>org.yaml</groupId>
+    <artifactId>snakeyaml</artifactId>
+    <version>2.0</version> <!-- Ensure it's 1.32 or later -->
+</dependency>
+    
+	
+	<dependency>
+    <groupId>org.liquibase</groupId>
+    <artifactId>liquibase-core</artifactId>
+    <version>4.20.0</version>
+	</dependency>
+	
         
 
     </dependencies>
@@ -100,6 +113,20 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId> <!-- Essential for Spring Boot apps -->
             </plugin>
+            <plugin>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-maven-plugin</artifactId>
+            <version>4.25.0</version>
+            <configuration>
+                <changeLogFile>src/main/resources/db/changelog/generated-changelog.yaml</changeLogFile>
+                <driver>org.postgresql.Driver</driver>
+                <url>jdbc:postgresql://localhost:5433/postgres</url>
+                <username>postgres</username>
+                <password>admin123</password>
+                <defaultSchemaName>finance_management</defaultSchemaName>
+                <outputChangeLogFile>src/main/resources/db/changelog/generated-changelog.yaml</outputChangeLogFile>
+            </configuration>
+        </plugin>
         </plugins>
     </build>
 
