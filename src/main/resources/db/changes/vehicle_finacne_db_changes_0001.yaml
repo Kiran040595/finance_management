@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20250223-1
+      author: kiran_kumar_dadi
+      comments: Drop the payment_tracking table if it exists
+      preConditions:
+        - onFail: CONTINUE
+        - tableExists:
+            schemaName: finance_management
+            tableName: payment_tracking
+      changes:
+        - dropTable:
+            schemaName: finance_management
+            tableName: payment_tracking
+            cascadeConstraints: true

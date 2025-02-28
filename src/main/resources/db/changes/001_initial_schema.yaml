@@ -1,0 +1,523 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1740114982733-1
+      author: today (generated)
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                schemaName: finance_management
+                tableName: customer
+      changes:
+        - createTable:
+            tableName: customer
+            schemaName: finance_management
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: customer_pkey
+              - column:
+                  name: aadhaar_number
+                  type: VARCHAR(255)
+              - column:
+                  name: address
+                  type: VARCHAR(255)
+              - column:
+                  name: father_name
+                  type: VARCHAR(255)
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: phone_number_primary
+                  type: VARCHAR(255)
+              - column:
+                  name: phone_number_secondary
+                  type: VARCHAR(255)
+  - changeSet:
+      id: 1740114982733-2
+      author: today (generated)
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                schemaName: finance_management
+                tableName: guarantor
+      changes:
+        - createTable:
+            tableName: guarantor
+            schemaName: finance_management
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: guarantor_pkey
+              - column:
+                  name: aadhaar_number
+                  type: VARCHAR(255)
+              - column:
+                  name: address
+                  type: VARCHAR(255)
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: phone_number_primary
+                  type: VARCHAR(255)
+              - column:
+                  name: phone_number_secondary
+                  type: VARCHAR(255)
+  - changeSet:
+      id: 1740114982733-3
+      author: today (generated)
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                schemaName: finance_management
+                tableName: loan
+      changes:
+        - createTable:
+            tableName: loan
+            schemaName: finance_management
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: loan_pkey
+              - column:
+                  name: emi
+                  type: INTEGER
+              - column:
+                  name: file_number
+                  type: BIGINT
+              - column:
+                  name: interest_rate
+                  type: DOUBLE
+              - column:
+                  name: loan_amount
+                  type: DOUBLE
+              - column:
+                  name: tenure
+                  type: INTEGER
+              - column:
+                  name: customer_id
+                  type: BIGINT
+              - column:
+                  name: guarantor_id
+                  type: BIGINT
+              - column:
+                  name: vehicle_id
+                  type: BIGINT
+              - column:
+                  name: loan_creation_date
+                  type: TIMESTAMP
+              - column:
+                  name: paid_emi
+                  type: INTEGER
+              - column:
+                  name: remaining_emi
+                  type: INTEGER
+              - column:
+                  name: paid_emi_count
+                  type: INTEGER
+              - column:
+                  name: remaining_emi_count
+                  type: INTEGER
+              - column:
+                  name: overdue_amount
+                  type: DOUBLE
+              - column:
+                  name: pending_days
+                  type: BIGINT
+              - column:
+                  name: total_pending_emi_amount
+                  type: DOUBLE
+              - column:
+                  name: last_updated
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 1740114982733-4
+      author: today (generated)
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                schemaName: finance_management
+                tableName: vehicle
+      changes:
+        - createTable:
+            tableName: vehicle
+            schemaName: finance_management
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: vehicle_pkey
+              - column:
+                  name: insurance_expiry_date
+                  type: DATE
+              - column:
+                  name: model_year
+                  type: INTEGER
+              - column:
+                  name: vehicle_number
+                  type: VARCHAR(255)
+  - changeSet:
+      id: 1740114982733-5
+      author: today (generated)
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                schemaName: finance_management
+                tableName: payment
+      changes:
+        - createTable:
+            tableName: payment
+            schemaName: finance_management
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: payment_pkey
+              - column:
+                  name: amount
+                  type: DOUBLE
+              - column:
+                  name: payment_date
+                  type: TIMESTAMP
+              - column:
+                  name: payment_number
+                  type: INTEGER
+              - column:
+                  name: loan_id
+                  type: BIGINT
+  - changeSet:
+      id: 1740114982733-6
+      author: today (generated)
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                schemaName: finance_management
+                tableName: loan_emi
+      changes:
+        - createTable:
+            tableName: loan_emi
+            schemaName: finance_management
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: loan_emi_pkey
+              - column:
+                  name: emi_amount
+                  type: DOUBLE
+              - column:
+                  name: emi_number
+                  type: INTEGER
+              - column:
+                  name: paid_amount
+                  type: DOUBLE
+              - column:
+                  name: payment_date
+                  type: DATE
+              - column:
+                  name: remaining_amount
+                  type: DOUBLE
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+              - column:
+                  name: loan_id
+                  type: BIGINT
+              - column:
+                  name: emi_date
+                  type: DATE
+              - column:
+                  name: od_amount_after_payment
+                  type: DOUBLE
+ 
+  - changeSet:
+      id: 1740114982733-8
+      author: today (generated)
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                schemaName: finance_management
+                tableName: payments_tracking
+      changes:
+        - createTable:
+            tableName: payments_tracking
+            schemaName: finance_management
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: payments_tracking_pkey
+              - column:
+                  name: amount
+                  type: DOUBLE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: bill_number
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: transaction_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: transaction_type
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: customer_id
+                  type: BIGINT
+              - column:
+                  name: loan_id
+                  type: BIGINT
+              - column:
+                  name: loan_emi_id
+                  type: BIGINT
+
+  - changeSet:
+      id: 1740114982733-10
+      author: today (generated)
+      preConditions:
+        - onFail: CONTINUE
+        - not:
+            - uniqueConstraintExists:
+                schemaName: finance_management
+                tableName: payments_tracking
+                constraintName: uk_gcs4y0a0rr0p5c19i8qjtgtyi
+      changes:
+        - addUniqueConstraint:
+            schemaName: finance_management
+            tableName: payments_tracking
+            columnNames: bill_number
+            constraintName: uk_gcs4y0a0rr0p5c19i8qjtgtyi
+  - changeSet:
+      id: 1740114982733-11
+      author: today (generated)
+      preConditions:
+        - onFail: CONTINUE
+        - not:
+            - foreignKeyConstraintExists:
+                schemaName: finance_management
+                foreignKeyName: fk2vuxt35whxk1bd42gfohhdvhs
+      changes:
+        - addForeignKeyConstraint:
+            schemaName: finance_management
+            baseTableName: payment
+            baseColumnNames: loan_id
+            referencedTableName: loan
+            referencedColumnNames: id
+            constraintName: fk2vuxt35whxk1bd42gfohhdvhs
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            validate: true
+  - changeSet:
+      id: 1740114982733-12
+      author: today (generated)
+      preConditions:
+        - onFail: CONTINUE
+        - not:
+            - foreignKeyConstraintExists:
+                schemaName: finance_management
+                foreignKeyName: fk6m4mw3i2dcp9usqbb9t1nsyse
+      changes:
+        - addForeignKeyConstraint:
+            schemaName: finance_management
+            baseTableName: payments_tracking
+            baseColumnNames: loan_id
+            referencedTableName: loan
+            referencedColumnNames: id
+            constraintName: fk6m4mw3i2dcp9usqbb9t1nsyse
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            validate: true
+  - changeSet:
+      id: 1740114982733-13
+      author: today (generated)
+      preConditions:
+        - onFail: CONTINUE
+        - not:
+            - foreignKeyConstraintExists:
+                schemaName: finance_management
+                foreignKeyName: fk6x64co0hkqibvc36wj1gnir1j
+      changes:
+        - addForeignKeyConstraint:
+            schemaName: finance_management
+            baseTableName: loan
+            baseColumnNames: vehicle_id
+            referencedTableName: vehicle
+            referencedColumnNames: id
+            constraintName: fk6x64co0hkqibvc36wj1gnir1j
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            validate: true
+  - changeSet:
+      id: 1740114982733-14
+      author: today (generated)
+      preConditions:
+        - onFail: CONTINUE
+        - not:
+            - foreignKeyConstraintExists:
+                schemaName: finance_management
+                foreignKeyName: fk7ia2uegh01a3cno35tu2q91q4
+      changes:
+        - addForeignKeyConstraint:
+            schemaName: finance_management
+            baseTableName: payments_tracking
+            baseColumnNames: customer_id
+            referencedTableName: customer
+            referencedColumnNames: id
+            constraintName: fk7ia2uegh01a3cno35tu2q91q4
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            validate: true
+ 
+  - changeSet:
+      id: 1740114982733-16
+      author: today (generated)
+      preConditions:
+        - onFail: CONTINUE
+        - not:
+            - foreignKeyConstraintExists:
+                schemaName: finance_management
+                foreignKeyName: fkcwv05agfqwg5ndy6adbefsx7d
+      changes:
+        - addForeignKeyConstraint:
+            schemaName: finance_management
+            baseTableName: loan
+            baseColumnNames: customer_id
+            referencedTableName: customer
+            referencedColumnNames: id
+            constraintName: fkcwv05agfqwg5ndy6adbefsx7d
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            validate: true
+  - changeSet:
+      id: 1740114982733-17
+      author: today (generated)
+      preConditions:
+        - onFail: CONTINUE
+        - not:
+            - foreignKeyConstraintExists:
+                schemaName: finance_management
+                foreignKeyName: fkem6vos60jqps23e3a12tq81gr
+      changes:
+        - addForeignKeyConstraint:
+            schemaName: finance_management
+            baseTableName: loan
+            baseColumnNames: guarantor_id
+            referencedTableName: guarantor
+            referencedColumnNames: id
+            constraintName: fkem6vos60jqps23e3a12tq81gr
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            validate: true
+  - changeSet:
+      id: 1740114982733-18
+      author: today (generated)
+      preConditions:
+        - onFail: CONTINUE
+        - not:
+            - foreignKeyConstraintExists:
+                schemaName: finance_management
+                foreignKeyName: fkg42ntn29prgi2ihyis6lgusa4
+      changes:
+        - addForeignKeyConstraint:
+            schemaName: finance_management
+            baseTableName: loan_emi
+            baseColumnNames: loan_id
+            referencedTableName: loan
+            referencedColumnNames: id
+            constraintName: fkg42ntn29prgi2ihyis6lgusa4
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            validate: true
+  - changeSet:
+      id: 1740114982733-19
+      author: today (generated)
+      preConditions:
+        - onFail: CONTINUE
+        - not:
+            - foreignKeyConstraintExists:
+                schemaName: finance_management
+                foreignKeyName: fkhov524xpjwg4ko9hk89nomdd5
+      changes:
+        - addForeignKeyConstraint:
+            schemaName: finance_management
+            baseTableName: payments_tracking
+            baseColumnNames: loan_emi_id
+            referencedTableName: loan_emi
+            referencedColumnNames: id
+            constraintName: fkhov524xpjwg4ko9hk89nomdd5
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            validate: true
+ 
+ 
+            

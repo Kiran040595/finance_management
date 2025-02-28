@@ -1,0 +1,177 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="today (generated)" id="1740114982733-1">
+        <createTable tableName="customer">
+            <column autoIncrement="true" name="id" startWith="60" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="customer_pkey"/>
+            </column>
+            <column name="aadhaar_number" type="VARCHAR(255)"/>
+            <column name="address" type="VARCHAR(255)"/>
+            <column name="father_name" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="phone_number_primary" type="VARCHAR(255)"/>
+            <column name="phone_number_secondary" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="today (generated)" id="1740114982733-2">
+        <createTable tableName="guarantor">
+            <column autoIncrement="true" name="id" startWith="60" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="guarantor_pkey"/>
+            </column>
+            <column name="aadhaar_number" type="VARCHAR(255)"/>
+            <column name="address" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="phone_number_primary" type="VARCHAR(255)"/>
+            <column name="phone_number_secondary" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="today (generated)" id="1740114982733-3">
+        <createTable tableName="loan">
+            <column autoIncrement="true" name="id" startWith="58" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="loan_pkey"/>
+            </column>
+            <column name="emi" type="INTEGER"/>
+            <column name="file_number" type="BIGINT"/>
+            <column name="interest_rate" type="FLOAT8"/>
+            <column name="loan_amount" type="FLOAT8"/>
+            <column name="tenure" type="INTEGER"/>
+            <column name="customer_id" type="BIGINT"/>
+            <column name="guarantor_id" type="BIGINT"/>
+            <column name="vehicle_id" type="BIGINT"/>
+            <column name="loan_creation_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="paid_emi" type="INTEGER"/>
+            <column name="remaining_emi" type="INTEGER"/>
+            <column name="paid_emi_count" type="INTEGER"/>
+            <column name="remaining_emi_count" type="INTEGER"/>
+            <column name="overdue_amount" type="FLOAT8"/>
+            <column name="pending_days" type="BIGINT"/>
+            <column name="total_pending_emi_amount" type="FLOAT8"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="last_updated" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="true" name="status" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="today (generated)" id="1740114982733-4">
+        <createTable tableName="vehicle">
+            <column autoIncrement="true" name="id" startWith="60" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="vehicle_pkey"/>
+            </column>
+            <column name="insurance_expiry_date" type="date"/>
+            <column name="model_year" type="INTEGER"/>
+            <column name="vehicle_number" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="today (generated)" id="1740114982733-5">
+        <createTable tableName="payment">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="payment_pkey"/>
+            </column>
+            <column name="amount" type="FLOAT8"/>
+            <column name="payment_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="payment_number" type="INTEGER"/>
+            <column name="loan_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="today (generated)" id="1740114982733-6">
+        <createTable tableName="loan_emi">
+            <column autoIncrement="true" name="id" startWith="615" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="loan_emi_pkey"/>
+            </column>
+            <column name="emi_amount" type="FLOAT8"/>
+            <column name="emi_number" type="INTEGER"/>
+            <column name="paid_amount" type="FLOAT8"/>
+            <column name="payment_date" type="date"/>
+            <column name="remaining_amount" type="FLOAT8"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="loan_id" type="BIGINT"/>
+            <column name="emi_date" type="date"/>
+            <column name="od_amount_after_paymnet" type="FLOAT8"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="today (generated)" id="1740114982733-7">
+        <createTable tableName="payment_tracking">
+            <column autoIncrement="true" name="id" startWith="31" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="payment_tracking_pkey"/>
+            </column>
+            <column name="amount" type="FLOAT8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bill_number" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transaction_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transaction_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="customer_id" type="BIGINT"/>
+            <column name="loan_id" type="BIGINT"/>
+            <column name="loan_emi_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="today (generated)" id="1740114982733-8">
+        <createTable tableName="payments_tracking">
+            <column autoIncrement="true" name="id" startWith="31" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="payments_tracking_pkey"/>
+            </column>
+            <column name="amount" type="FLOAT8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bill_number" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transaction_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transaction_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="customer_id" type="BIGINT"/>
+            <column name="loan_id" type="BIGINT"/>
+            <column name="loan_emi_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="today (generated)" id="1740114982733-9">
+        <addUniqueConstraint columnNames="bill_number" constraintName="uk_i915yli4ex9equ6w4a0jbei3w" tableName="payment_tracking"/>
+    </changeSet>
+    <changeSet author="today (generated)" id="1740114982733-10">
+        <addUniqueConstraint columnNames="bill_number" constraintName="uk_gcs4y0a0rr0p5c19i8qjtgtyi" tableName="payments_tracking"/>
+    </changeSet>
+    <changeSet author="today (generated)" id="1740114982733-11">
+        <addForeignKeyConstraint baseColumnNames="loan_id" baseTableName="payment" constraintName="fk2vuxt35whxk1bd42gfohhdvhs" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="loan" validate="true"/>
+    </changeSet>
+    <changeSet author="today (generated)" id="1740114982733-12">
+        <addForeignKeyConstraint baseColumnNames="loan_id" baseTableName="payments_tracking" constraintName="fk6m4mw3i2dcp9usqbb9t1nsyse" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="loan" validate="true"/>
+    </changeSet>
+    <changeSet author="today (generated)" id="1740114982733-13">
+        <addForeignKeyConstraint baseColumnNames="vehicle_id" baseTableName="loan" constraintName="fk6x64co0hkqibvc36wj1gnir1j" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="vehicle" validate="true"/>
+    </changeSet>
+    <changeSet author="today (generated)" id="1740114982733-14">
+        <addForeignKeyConstraint baseColumnNames="customer_id" baseTableName="payments_tracking" constraintName="fk7ia2uegh01a3cno35tu2q91q4" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="customer" validate="true"/>
+    </changeSet>
+    <changeSet author="today (generated)" id="1740114982733-15">
+        <addForeignKeyConstraint baseColumnNames="loan_emi_id" baseTableName="payment_tracking" constraintName="fka49hl1lmdb0bu596urgj0ulyu" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="loan_emi" validate="true"/>
+    </changeSet>
+    <changeSet author="today (generated)" id="1740114982733-16">
+        <addForeignKeyConstraint baseColumnNames="customer_id" baseTableName="loan" constraintName="fkcwv05agfqwg5ndy6adbefsx7d" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="customer" validate="true"/>
+    </changeSet>
+    <changeSet author="today (generated)" id="1740114982733-17">
+        <addForeignKeyConstraint baseColumnNames="guarantor_id" baseTableName="loan" constraintName="fkem6vos60jqps23e3a12tq81gr" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="guarantor" validate="true"/>
+    </changeSet>
+    <changeSet author="today (generated)" id="1740114982733-18">
+        <addForeignKeyConstraint baseColumnNames="loan_id" baseTableName="loan_emi" constraintName="fkg42ntn29prgi2ihyis6lgusa4" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="loan" validate="true"/>
+    </changeSet>
+    <changeSet author="today (generated)" id="1740114982733-19">
+        <addForeignKeyConstraint baseColumnNames="loan_emi_id" baseTableName="payments_tracking" constraintName="fkhov524xpjwg4ko9hk89nomdd5" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="loan_emi" validate="true"/>
+    </changeSet>
+    <changeSet author="today (generated)" id="1740114982733-20">
+        <addForeignKeyConstraint baseColumnNames="customer_id" baseTableName="payment_tracking" constraintName="fkod4tf3b00lrw4lopvsrvrm6ib" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="customer" validate="true"/>
+    </changeSet>
+    <changeSet author="today (generated)" id="1740114982733-21">
+        <addForeignKeyConstraint baseColumnNames="loan_id" baseTableName="payment_tracking" constraintName="fksov3yi8bx18qyfk9fdnprngmd" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="loan" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

@@ -56,7 +56,7 @@ public class PaymentServiceImpl implements PaymentService {
 		// Initialize totals for pending EMI count and amount
 	    long totalLoans = loans.getTotalElements();  // This gives the total loan count
 	    long pendingEmiCount = loanEmiRepository.fetchTotalPendingEmiCount();
-	    double pendingEmiAmount = loanEmiRepository.fetchTotaPendingEmiAmount();
+	    double pendingEmiAmount = loanEmiRepository.fetchTotaPendingEmiAmount()!=null?loanEmiRepository.fetchTotaPendingEmiAmount():0.0 ;
 	    long pendingCustomerCount = loanEmiRepository.countPendingCustomers(); 
 		
 	    Page<PaymentDTO> paymentDTOPage= loans.map(loan -> {
@@ -140,37 +140,39 @@ public class PaymentServiceImpl implements PaymentService {
 		calculateDaysSinceLastUnpaidEmi(id,true);
 		// Save the updated LoanEMI record
 		
-		 // Fetch last EMI bill number from only EMI transactions
-	    String lastEmiBillNumber = paymentsTrackingRepository
-	            .findLastEmiBillNumber()
-	            .orElse("E-000000");  // Default if no previous records
-	    
-	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMM"); // Format: YYYYMMDD
-        String formattedDate = paidDate.format(formatter);
-
-	    // Extract last sequence number and increment it
-	    
-	    
-	    String[] parts = lastEmiBillNumber.split("-"); // Splitting by '-'
-	    String lastSequenceStr = parts[parts.length - 1]; // Get last part
-	    int lastEmiSequence = Integer.parseInt(lastSequenceStr);
-
-	    
-	    
-	    String newEmiBillNumber = "E-" + formattedDate+"-" + String.format("%06d", lastEmiSequence + 1);
-
-	    PaymentsTracking paymentsTracking = new PaymentsTracking();
-	    paymentsTracking.setTransactionType("EMI Paid");
-	    paymentsTracking.setBillNumber(newEmiBillNumber);
-	    paymentsTracking.setTransactionDate(null!=loanEmi.getPaymentDate()? loanEmi.getPaymentDate():LocalDate.now());
-	    paymentsTracking.setAmount(paymentAmount);
-	    paymentsTracking.setLoan(loanEmi.getLoan());
-	    paymentsTracking.setLoanEmi(loanEmi);
-	    paymentsTracking.setCustomer(loanEmi.getLoan().getCustomer());
-
-	    paymentsTrackingRepository.save(paymentsTracking);
+		generatePaymentTrackingBill(loanEmi, paymentAmount, "EMI Paid", paidDate != null ? paidDate : LocalDate.now());
 		
-		return loanEmiRepository.save(loanEmi);
+//		 // Fetch last EMI bill number from only EMI transactions
+//	    String lastEmiBillNumber = paymentsTrackingRepository
+//	            .findLastEmiBillNumber()
+//	            .orElse("E-000000");  // Default if no previous records
+//	    
+//	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMM"); // Format: YYYYMMDD
+//        String formattedDate = paidDate.format(formatter);
+//
+//	    // Extract last sequence number and increment it
+//	    
+//	    
+//	    String[] parts = lastEmiBillNumber.split("-"); // Splitting by '-'
+//	    String lastSequenceStr = parts[parts.length - 1]; // Get last part
+//	    int lastEmiSequence = Integer.parseInt(lastSequenceStr);
+//
+//	    
+//	    
+//	    String newEmiBillNumber = "E-" + formattedDate+"-" + String.format("%06d", lastEmiSequence + 1);
+//
+//	    PaymentsTracking paymentsTracking = new PaymentsTracking();
+//	    paymentsTracking.setTransactionType("EMI Paid");
+//	    paymentsTracking.setBillNumber(newEmiBillNumber);
+//	    paymentsTracking.setTransactionDate(null!=loanEmi.getPaymentDate()? loanEmi.getPaymentDate():LocalDate.now());
+//	    paymentsTracking.setAmount(paymentAmount);
+//	    paymentsTracking.setLoan(loanEmi.getLoan());
+//	    paymentsTracking.setLoanEmi(loanEmi);
+//	    paymentsTracking.setCustomer(loanEmi.getLoan().getCustomer());
+//
+//	    paymentsTrackingRepository.save(paymentsTracking);
+//		
+	return loanEmiRepository.save(loanEmi);
 	}
 
 	private Double calculateLoanOD(Loan loan) {
@@ -290,4 +292,110 @@ public class PaymentServiceImpl implements PaymentService {
 		}
 
 	}
+	
+	
+	
+	@Override
+	public LoanEmi updateEmi(Long loanId, Integer emiNumber, String emiDate, LocalDate paymentDate, Double paidAmount, Double remainingAmount) {
+	    // Find the LoanEMI record for the given loanId and emiNumber
+	    Optional<Loan> loan = loanRepository.findByFileNumber(loanId);
+	    if (!loan.isPresent()) {
+	        throw new RuntimeException("Loan not found");
+	    }
+	    Long id = loan.get().getId();
+
+	    LoanEmi loanEmi = loanEmiRepository.findByLoanIdAndEmiNumber(id, emiNumber);
+	    if (loanEmi == null) {
+	        throw new RuntimeException("EMI not found");
+	    }
+
+	    // Update the EMI details with provided values
+	    if (emiDate != null) {
+	        loanEmi.setEmiDate(LocalDate.parse(emiDate));
+	    }
+	    if (paymentDate != null) {
+	        loanEmi.setPaymentDate(paymentDate);
+	    }
+	    if (paidAmount != null) {
+	        loanEmi.setPaidAmount(paidAmount);
+	    }
+	    if (remainingAmount != null) {
+	        loanEmi.setRemainingAmount(remainingAmount);
+	    } else {
+	        // Recalculate remainingAmount if not provided
+	        double overdueAmount = calculateEmiOD(loanEmi, paymentDate != null ? paymentDate : loanEmi.getPaymentDate());
+	        loanEmi.setRemainingAmount(loanEmi.getEmiAmount() + overdueAmount - (paidAmount != null ? paidAmount : loanEmi.getPaidAmount()));
+	    }
+
+	    // Update status based on paidAmount and emiAmount
+	    if (loanEmi.getPaidAmount() >= loanEmi.getEmiAmount() - 30) {
+	        loanEmi.setStatus("Paid");
+	        if (null == loan.get().getPaidEmiCount()) {
+	            loan.get().setPaidEmiCount(0);
+	        }
+	        if (loanEmi.getPaymentDate() == null || !loanEmi.getPaymentDate().equals(paymentDate)) {
+	            loan.get().setPaidEmiCount(loan.get().getPaidEmiCount() + 1);
+	        }
+	        if (null == loan.get().getRemainingEmiCount()) {
+	            loan.get().setRemainingEmiCount(loan.get().getTenure() - 1);
+	        } else if (loanEmi.getPaymentDate() == null || !loanEmi.getPaymentDate().equals(paymentDate)) {
+	            loan.get().setRemainingEmiCount(loan.get().getRemainingEmiCount() - 1);
+	        }
+	    } else if (loanEmi.getRemainingAmount() > 0) {
+	        loanEmi.setStatus("Pending");
+	        if (loanEmi.getPaymentDate() != null && loan.get().getPaidEmiCount() > 0) {
+	            loan.get().setPaidEmiCount(loan.get().getPaidEmiCount() - 1);
+	            loan.get().setRemainingEmiCount(loan.get().getRemainingEmiCount() + 1);
+	        }
+	    } else {
+	        loanEmi.setStatus("Overpaid");
+	    }
+	    
+	 // Update PaymentsTracking amount (no new bill generation)
+	    PaymentsTracking existingPayment = paymentsTrackingRepository.findTopByLoanEmiOrderByBillNumberDesc(loanEmi);
+	    if (existingPayment != null && paidAmount != null) {
+	        existingPayment.setAmount(paidAmount);
+	        paymentsTrackingRepository.save(existingPayment);
+	    } else if (existingPayment == null) {
+	    	generatePaymentTrackingBill(loanEmi, paidAmount, "EMI Updated", paymentDate != null ? paymentDate : LocalDate.now());
+	    }
+
+	    // Update loan totals without generating a new bill
+	    updateTotalamounts(loan.get(), false);
+	    calculateDaysSinceLastUnpaidEmi(id, false);
+	    
+
+	    // Save the updated LoanEMI record without bill generation
+	    return loanEmiRepository.save(loanEmi);
+	}
+	
+	private PaymentsTracking generatePaymentTrackingBill(LoanEmi loanEmi, Double amount, String transactionType, LocalDate transactionDate) {
+	    // Fetch last EMI bill number from only EMI transactions
+	    String lastEmiBillNumber = paymentsTrackingRepository.findLastEmiBillNumber().orElse("E-000000");
+	    
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMM");
+	    String formattedDate = transactionDate.format(formatter);
+
+	    // Extract last sequence number and increment it
+	    String[] parts = lastEmiBillNumber.split("-");
+	    String lastSequenceStr = parts[parts.length - 1];
+	    int lastEmiSequence = Integer.parseInt(lastSequenceStr);
+
+	    String newEmiBillNumber = "E-" + formattedDate + "-" + String.format("%06d", lastEmiSequence + 1);
+
+	    // Create PaymentsTracking record
+	    PaymentsTracking paymentsTracking = new PaymentsTracking();
+	    paymentsTracking.setTransactionType(transactionType);
+	    paymentsTracking.setBillNumber(newEmiBillNumber);
+	    paymentsTracking.setTransactionDate(transactionDate);
+	    paymentsTracking.setAmount(amount);
+	    paymentsTracking.setLoan(loanEmi.getLoan());
+	    paymentsTracking.setLoanEmi(loanEmi);
+	    paymentsTracking.setCustomer(loanEmi.getLoan().getCustomer());
+
+	    return paymentsTrackingRepository.save(paymentsTracking);
+	}
+	
+	
+	
 }

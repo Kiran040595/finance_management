@@ -32,7 +32,7 @@ public class LoanEmi {
     private LocalDate emiDate;
     private String status = "Pending"; // EMI Status: "Pending", "Paid", or "Overpaid"
     @Column(precision = 10, scale = 2) 
-    private Double odAmountAfterPaymnet = 0.0;
+    private Double odAmountAfterPayment = 0.0;
     @ManyToOne
     @JoinColumn(name = "loan_id")
     @JsonBackReference
@@ -115,12 +115,13 @@ public class LoanEmi {
 		this.emiDate = emiDate;
 	}
 	
-	public Double getOdAmountAfterPaymnet() {
-		return odAmountAfterPaymnet;
+	
+	public Double getOdAmountAfterPayment() {
+		return odAmountAfterPayment;
 	}
 
-	public void setOdAmountAfterPaymnet(Double odAmountAfterPaymnet) {
-		this.odAmountAfterPaymnet = odAmountAfterPaymnet;
+	public void setOdAmountAfterPayment(Double odAmountAfterPayment) {
+		this.odAmountAfterPayment = odAmountAfterPayment;
 	}
 
 	// Utility Method to Update Payment

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.example.financemanagement.model.LoanEmi;
 import com.example.financemanagement.model.PaymentsTracking;
 
 @Repository
@@ -20,4 +21,8 @@ public interface PaymentsTrackingRepository extends JpaRepository<PaymentsTracki
     @Query(value = "SELECT bill_number FROM finance_management.payments_tracking WHERE transaction_type = 'EMI Paid' ORDER BY id DESC LIMIT 1", 
     nativeQuery = true)
     Optional<String> findLastEmiBillNumber();
+
+	PaymentsTracking findByLoanEmi(LoanEmi loanEmi);
+
+	PaymentsTracking findTopByLoanEmiOrderByBillNumberDesc(LoanEmi loanEmi);
 }
