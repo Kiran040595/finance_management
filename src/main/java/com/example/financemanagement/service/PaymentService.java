@@ -15,5 +15,6 @@ public interface PaymentService {
 	PaymentDTO getPaymentDetails(Long loanId);
 	public PaymentDTO getLoanDetailsByFileNumber(Long fileNumber);
 	public LoanEmi payEmi(Long loanId, Integer emiNumber, Double paymentAmount, LocalDate paidDate);
-
+	
+	public LoanEmi updateEmi(Long loanId, Integer emiNumber, String emiDate, LocalDate paymentDate, Double paidAmount, Double remainingAmount);
 }

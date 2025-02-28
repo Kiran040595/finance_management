@@ -97,8 +97,14 @@ public interface LoanRepository extends JpaRepository<Loan, Long>, JpaSpecificat
     	double getTotalReceivedAmount();
 
     	
-    	@Query("SELECT COALESCE(SUM(l.loanAmount) - SUM(e.paidAmount), 0) FROM Loan l LEFT JOIN LoanEmi e ON l.id = e.loan.id")
-    	double getTotalOutstandingAmount();
+		/*
+		 * @Query("SELECT COALESCE(SUM(l.loanAmount) - SUM(e.paidAmount), 0) FROM Loan l LEFT JOIN LoanEmi e ON l.id = e.loan.id"
+		 * ) double getTotalOutstandingAmount();
+		 */
+    	
+    	@Query("SELECT SUM(l.remainingAmount) FROM LoanEmi l WHERE l.status = 'Pending'")
+    	Double getTotalOutstandingAmount();
+
 
 
  
