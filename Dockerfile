@@ -4,17 +4,20 @@ FROM openjdk:11-jdk-slim
 # Set working directory
 WORKDIR /app
 
-# Copy the Maven wrapper and pom.xml for dependency resolution
+# Copy Maven wrapper and pom.xml
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
 
-# Download dependencies (this will be cached in Docker layers)
+# Grant execution permission to Maven wrapper
+RUN chmod +x mvnw
+
+# Download dependencies (this will be cached)
 RUN ./mvnw dependency:go-offline
 
 # Copy the actual source code
 COPY src ./src
 
-# Build the application (creates JAR inside the container)
+# Build the application
 RUN ./mvnw clean package
 
 # Rename and move JAR file
