@@ -1,133 +1,157 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.example</groupId>
-    <artifactId>finance-management</artifactId>
-    <version>1.0.0</version>
-    <packaging>jar</packaging>
+	<groupId>com.example</groupId>
+	<artifactId>finance-management</artifactId>
+	<version>1.0.0</version>
+	<packaging>jar</packaging>
 
-    <name>Finance Management Application</name>
-    <description>Finance Management Application</description>
+	<name>Finance Management Application</name>
+	<description>Finance Management Application</description>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.13</version> <!-- Spring Boot Version -->
-        <relativePath /> <!-- lookup parent from repository -->
-    </parent>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.7.13</version>
+		<relativePath />
+	</parent>
 
-    <properties>
-        <java.version>11</java.version> <!-- Set Java Version -->
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-    </properties>
+	<properties>
+		<java.version>11</java.version>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
+	</properties>
 
-    <dependencies>
-        <!-- Spring Boot dependencies -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId> <!-- Spring Web for REST APIs -->
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId> <!-- Spring Data JPA for database access -->
-        </dependency>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>2021.0.6</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
-        <!-- PostgreSQL dependency for connecting to PostgreSQL database -->
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.3.1</version> <!-- PostgreSQL JDBC Driver -->
-        </dependency>
+	<dependencies>
+		<!-- Spring Boot Starters -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
 
-        <!-- Servlet API dependency, necessary for web applications, but provided at runtime by the container -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.1</version> <!-- Servlet API for Java EE -->
-            <scope>provided</scope> <!-- This is provided at runtime, not needed in the package -->
-        </dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
 
-        <!-- Spring Boot test dependency for writing and running unit tests -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId> <!-- Spring Boot Test Starter for testing -->
-            <scope>test</scope> <!-- Only used in test scope -->
-        </dependency>
-        
-        <!-- MapStruct Dependency -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>1.5.2.Final</version> <!-- MapStruct for generating the mapping code -->
-        </dependency>
+		<!-- PostgreSQL JDBC Driver -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.3.1</version>
+		</dependency>
 
-        <!-- MapStruct Processor for Compile-time Code Generation -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-            <version>1.5.2.Final</version> <!-- This processor generates code at compile time -->
-            <scope>provided</scope> <!-- Processor is only needed at compile-time -->
-        </dependency>
-        
+		<!-- Servlet API -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>4.0.1</version>
+			<scope>provided</scope>
+		</dependency>
 
-    <!-- Lombok -->
-    <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <version>1.18.30</version> <!-- Use the latest version -->
-        <scope>provided</scope>
-    </dependency>
+		<!-- Testing -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 
-    <!-- Annotation Processor for Lombok -->
-    <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok-mapstruct-binding</artifactId>
-        <version>0.2.0</version>
-        <scope>provided</scope>
-    </dependency>
-    
-    <dependency>
-    <groupId>org.yaml</groupId>
-    <artifactId>snakeyaml</artifactId>
-    <version>2.0</version> <!-- Ensure it's 1.32 or later -->
-</dependency>
-    
-	
-	<dependency>
-    <groupId>org.liquibase</groupId>
-    <artifactId>liquibase-core</artifactId>
-    <version>4.20.0</version>
-	</dependency>
-	
-        
+		<!-- MapStruct -->
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>1.5.2.Final</version>
+		</dependency>
 
-    </dependencies>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct-processor</artifactId>
+			<version>1.5.2.Final</version>
+			<scope>provided</scope>
+		</dependency>
 
-    <build>
-        <plugins>
-            <!-- Spring Boot Maven Plugin for running and packaging the Spring Boot application -->
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId> <!-- Essential for Spring Boot apps -->
-            </plugin>
-            <plugin>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-maven-plugin</artifactId>
-            <version>4.25.0</version>
-            <configuration>
-                <changeLogFile>src/main/resources/db/changelog/generated-changelog.yaml</changeLogFile>
-                <driver>org.postgresql.Driver</driver>
-                <url>jdbc:postgresql://localhost:5433/postgres</url>
-                <username>postgres</username>
-                <password>admin123</password>
-                <defaultSchemaName>finance_management</defaultSchemaName>
-                <outputChangeLogFile>src/main/resources/db/changelog/generated-changelog.yaml</outputChangeLogFile>
-            </configuration>
-        </plugin>
-        </plugins>
-    </build>
+		<!-- Lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.30</version>
+			<scope>provided</scope>
+		</dependency>
 
+		<!-- Lombok-MapStruct Binding -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok-mapstruct-binding</artifactId>
+			<version>0.2.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- YAML support -->
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>2.0</version>
+		</dependency>
+
+		<!-- Liquibase -->
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+			<version>4.20.0</version>
+		</dependency>
+
+		<!-- Spring Cloud OpenFeign -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- Spring Boot Plugin -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<!-- Liquibase Plugin -->
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<version>4.25.0</version>
+				<configuration>
+					<changeLogFile>
+						src/main/resources/db/changelog/generated-changelog.yaml</changeLogFile>
+					<driver>org.postgresql.Driver</driver>
+					<url>jdbc:postgresql://localhost:5433/postgres</url>
+					<username>postgres</username>
+					<password>admin123</password>
+					<defaultSchemaName>finance_management</defaultSchemaName>
+					<outputChangeLogFile>
+						src/main/resources/db/changelog/generated-changelog.yaml</outputChangeLogFile>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

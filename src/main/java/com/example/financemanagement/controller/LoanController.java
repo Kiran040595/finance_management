@@ -2,11 +2,9 @@ package com.example.financemanagement.controller;
 
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +20,7 @@ import com.example.financemanagement.dto.FullLoanDetailsDTO;
 import com.example.financemanagement.dto.LoanRequestDTO;
 import com.example.financemanagement.dto.LoanResponseDTO;
 import com.example.financemanagement.dto.LoanStatsDTO;
+import com.example.financemanagement.feign.LoanServiceFeignClient;
 import com.example.financemanagement.service.LoanService;
 
 @RestController
@@ -32,10 +31,13 @@ public class LoanController {
     @Autowired
     private LoanService loanService;
     
+    @Autowired
+    private LoanServiceFeignClient loanServiceFeignClient;
+    
     
     @PostMapping
     public ResponseEntity<String> createLoan(@RequestBody LoanRequestDTO loanDTO){
-    	loanService.createLoan(loanDTO);
+    	loanServiceFeignClient.createLoan(loanDTO);
     	return ResponseEntity.status(HttpStatus.CREATED).body("Loan created successfully");
     	
     }
@@ -43,7 +45,7 @@ public class LoanController {
     
     @GetMapping("/loans")
     public List<LoanResponseDTO> getAllLoans(){
-    	return loanService.getAllLoans();
+    	return loanServiceFeignClient.getAllLoans();
     	
     }
     
