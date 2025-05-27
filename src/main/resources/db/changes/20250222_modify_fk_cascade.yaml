@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20250222-1
+      author: kiran_kumar
+      comments: Modify fk6m4mw3i2dcp9usqbb9t1nsyse to include ON DELETE CASCADE for payments_tracking.loan_id referencing loan.id
+      preConditions:
+        - onFail: CONTINUE
+        - foreignKeyConstraintExists:
+            schemaName: finance_management
+            foreignKeyName: fk6m4mw3i2dcp9usqbb9t1nsyse
+      changes:
+        - dropForeignKeyConstraint:
+            schemaName: finance_management
+            baseTableName: payments_tracking
+            constraintName: fk6m4mw3i2dcp9usqbb9t1nsyse
+        - addForeignKeyConstraint:
+            schemaName: finance_management
+            baseTableName: payments_tracking
+            baseColumnNames: loan_id
+            referencedTableName: loan
+            referencedColumnNames: id
+            constraintName: fk6m4mw3i2dcp9usqbb9t1nsyse
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: CASCADE
+            onUpdate: NO ACTION
+            validate: true
