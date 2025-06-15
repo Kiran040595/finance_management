@@ -2,11 +2,9 @@ package com.example.financemanagement.controller;
 
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,15 +22,25 @@ import com.example.financemanagement.dto.LoanResponseDTO;
 import com.example.financemanagement.dto.LoanStatsDTO;
 import com.example.financemanagement.service.LoanService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/loan")
 @CrossOrigin(origins = "http://localhost:3000") // Allow requests from localhost:3000
+@Tag(name = "Loan", description = "Operations related to loans")
 public class LoanController {
 	
     @Autowired
     private LoanService loanService;
     
-    
+    @Operation(summary = "Create a new loan", description = "Save a loan with customer and vehicle details")
+    @ApiResponses({
+      @ApiResponse(responseCode = "201", description = "Loan created"),
+      @ApiResponse(responseCode = "400", description = "Validation failed")
+    })
     @PostMapping
     public ResponseEntity<String> createLoan(@RequestBody LoanRequestDTO loanDTO){
     	loanService.createLoan(loanDTO);

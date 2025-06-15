@@ -1,12 +1,7 @@
 databaseChangeLog:
   - include:
-      file: classpath:/db/changes/001_initial_schema.yaml
+      file: db/changes/001_initial_schema.yaml
   - include:
-      file: classpath:/db/changes/20250222_modify_fk_cascade.yaml
+      file: db/changes/002_add_new_feature.yaml
   - include:
-      file: classpath:/db/changes/vehicle_finacne_db_changes_0001.yaml
-      
-      
-      
-      
-      
+      file: db/changes/vehicle_finacne_db_changes_0001.yaml
