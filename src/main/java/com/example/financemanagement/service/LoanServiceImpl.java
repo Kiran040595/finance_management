@@ -22,6 +22,7 @@ import com.example.financemanagement.dto.LoanDTO;
 import com.example.financemanagement.dto.LoanRequestDTO;
 import com.example.financemanagement.dto.LoanResponseDTO;
 import com.example.financemanagement.dto.LoanStatsDTO;
+import com.example.financemanagement.exception.LoanNotFoundException;
 import com.example.financemanagement.mapper.LoanMapper;
 import com.example.financemanagement.model.Customer;
 import com.example.financemanagement.model.Guarantor;
@@ -150,7 +151,9 @@ public class LoanServiceImpl implements LoanService {
      
     @Override
     public void  updateLoan(Long id,LoanRequestDTO loanRequestDTO) {
-    	Loan existingLoan = loanRepository.findByFileNumber(id).get();
+    	Loan existingLoan = loanRepository.findByFileNumber(id).
+    			orElseThrow(() -> new LoanNotFoundException("Loan with file number " + id + " not found"));
+    	
     	
     	// Update Loan fields
     	existingLoan.setFileNumber(loanRequestDTO.getFileNumber());
