@@ -1,5 +1,6 @@
 package com.example.financemanagement.service;
 
+import com.example.financemanagement.exception.CustomerNotFoundException;
 import com.example.financemanagement.model.Customer;
 import com.example.financemanagement.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,9 @@ public class CustomerService {
     }
 
     public Optional<Customer> getCustomerById(Long id) {
-        return customerRepository.findById(id);
+        Customer customer =  customerRepository.findById(id)
+        		.orElseThrow(()-> new CustomerNotFoundException("Customer With ID"+id+"not Found"));
+        return Optional.ofNullable(customer);
     }
 
     public Customer saveCustomer(Customer customer) {
